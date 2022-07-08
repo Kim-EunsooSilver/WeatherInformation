@@ -1,0 +1,18 @@
+/* 
+  Localizable.strings
+  WeatherInformation
+
+  Created by Eunsoo KIM on 2022/07/08.
+  
+*/
+
+"Temperature: " = "現在の気温: ";
+"Humidity: " = "現在の湿度: ";
+
+"current temperature: " = "現在の気温: ";
+"feeling temperature: " = "体感気温：";
+"current humidity: " = "現在の湿度: ";
+"minimum Temperature: " = "最低気温: ";
+"maximum Temperature: " = "最高気温: ";
+"air pressure: " = "気圧: ";
+"wind speed: " = "風速: ";
