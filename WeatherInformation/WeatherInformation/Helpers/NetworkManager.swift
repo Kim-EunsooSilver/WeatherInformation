@@ -88,7 +88,10 @@ struct NetworkManager {
         cityName: String,
         completion: @escaping (Result<DetailWeather, NetworkManagerError>) -> Void
     ) {
-        let urlString = "\(K.openWeatherURL)&q=\(cityName)"
+        guard let regionCode = Locale.current.languageCode else {
+            return
+        }
+        let urlString = "\(K.openWeatherURL)&q=\(cityName)&lang=\(regionCode)"
         
         performRequest(with: urlString) { result in
             switch result {
