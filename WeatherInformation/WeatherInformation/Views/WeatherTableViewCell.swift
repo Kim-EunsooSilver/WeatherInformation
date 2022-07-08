@@ -69,7 +69,7 @@ final class WeatherTableViewCell: UITableViewCell {
         weatherIcon.image = nil
     }
     func setProperties(simpleWeather: SimpleWeather?) {
-        cityTitleLabel.text = simpleWeather?.cityName
+        cityTitleLabel.text = simpleWeather?.cityName.localized
         guard let _simpleWeather = simpleWeather else {
             return
         }

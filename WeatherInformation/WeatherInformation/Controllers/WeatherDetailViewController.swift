@@ -166,7 +166,7 @@ final class WeatherDetailViewController: UIViewController {
     }
     
     private func setProperties() {
-        cityNameLabel.text = cityName
+        cityNameLabel.text = cityName?.localized
         guard let _detailWeather = detailWeather else {
             return
         }
