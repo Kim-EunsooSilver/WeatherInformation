@@ -23,6 +23,7 @@
 		89924DF4286591AE006EA2EE /* WeatherTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89924DF3286591AE006EA2EE /* WeatherTableViewCell.swift */; };
 		89924DF62865961A006EA2EE /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89924DF52865961A006EA2EE /* Constants.swift */; };
 		89CE58EF2877CD4C00E2ED02 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 89CE58F12877CD4C00E2ED02 /* Localizable.strings */; };
+		89CE58F42877D21900E2ED02 /* String+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CE58F32877D21900E2ED02 /* String+.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -45,6 +46,7 @@
 		89924DF52865961A006EA2EE /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		89CE58F02877CD4C00E2ED02 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		89CE58F22877CF3C00E2ED02 /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/Localizable.strings; sourceTree = "<group>"; };
+		89CE58F32877D21900E2ED02 /* String+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -82,6 +84,7 @@
 			isa = PBXGroup;
 			children = (
 				892F4696287540EA007C7090 /* UIViewController+.swift */,
+				89CE58F32877D21900E2ED02 /* String+.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -222,6 +225,7 @@
 				89924DE228658BB4006EA2EE /* SceneDelegate.swift in Sources */,
 				8918F2232873FD4000E4CF89 /* DetailWeather.swift in Sources */,
 				8918F2212873FC1200E4CF89 /* WeatherDetailViewController.swift in Sources */,
+				89CE58F42877D21900E2ED02 /* String+.swift in Sources */,
 				898D9372286ED6D5006979D4 /* LoadingView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
