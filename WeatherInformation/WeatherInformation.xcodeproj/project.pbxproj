@@ -22,6 +22,7 @@
 		89924DEC28658BB5006EA2EE /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 89924DEA28658BB5006EA2EE /* LaunchScreen.storyboard */; };
 		89924DF4286591AE006EA2EE /* WeatherTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89924DF3286591AE006EA2EE /* WeatherTableViewCell.swift */; };
 		89924DF62865961A006EA2EE /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89924DF52865961A006EA2EE /* Constants.swift */; };
+		89CE58EF2877CD4C00E2ED02 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 89CE58F12877CD4C00E2ED02 /* Localizable.strings */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -42,6 +43,7 @@
 		89924DED28658BB5006EA2EE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		89924DF3286591AE006EA2EE /* WeatherTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherTableViewCell.swift; sourceTree = "<group>"; };
 		89924DF52865961A006EA2EE /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		89CE58F02877CD4C00E2ED02 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -70,6 +72,7 @@
 				896A9CF028698C2E00A49C1E /* NetworkManager.swift */,
 				89924DF52865961A006EA2EE /* Constants.swift */,
 				8918F21B2872D56C00E4CF89 /* CacheManager.swift */,
+				89CE58F12877CD4C00E2ED02 /* Localizable.strings */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -193,6 +196,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				89924DEC28658BB5006EA2EE /* LaunchScreen.storyboard in Resources */,
+				89CE58EF2877CD4C00E2ED02 /* Localizable.strings in Resources */,
 				89924DE928658BB5006EA2EE /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -229,6 +233,14 @@
 				89924DEB28658BB5006EA2EE /* Base */,
 			);
 			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+		89CE58F12877CD4C00E2ED02 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				89CE58F02877CD4C00E2ED02 /* en */,
+			);
+			name = Localizable.strings;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
