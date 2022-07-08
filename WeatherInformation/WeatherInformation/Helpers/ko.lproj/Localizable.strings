@@ -1,0 +1,18 @@
+/* 
+  Localizable.strings
+  WeatherInformation
+
+  Created by Eunsoo KIM on 2022/07/08.
+  
+*/
+
+"Temperature: ": "현재기온"
+"Humidity: ": "현재습도"
+
+"current temperature: ": "현재기온"
+"feeling temperature: ": "체감기온"
+"current humidity: ": "현재습도"
+"minimum Temperature: ": "최저기온"
+"maximum Temperature: ": "최고기온"
+"air pressure: ": "기압"
+"wind speed: ": "풍속"
