@@ -73,8 +73,8 @@ final class WeatherTableViewCell: UITableViewCell {
         guard let _simpleWeather = simpleWeather else {
             return
         }
-        temperatureLabel.text = "Temperature: " + String(_simpleWeather.currentTemperature) + "˚C"
-        humidityLabel.text = "Humidity: " + String(_simpleWeather.currentHumidity) + "%"
+        temperatureLabel.text = "Temperature: ".localized + String(_simpleWeather.currentTemperature) + "˚C"
+        humidityLabel.text = "Humidity: ".localized + String(_simpleWeather.currentHumidity) + "%"
     }
 
     // MARK: - setLayout
