@@ -28,6 +28,7 @@ final class CacheManager {
                     guard let iconImage = UIImage(data: data) else {
                         return
                     }
+                    Self.shared.setObject(iconImage, forKey: cacheKey)
                     completion(iconImage)
             }
         }
