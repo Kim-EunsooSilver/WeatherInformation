@@ -48,6 +48,8 @@ struct NetworkManager {
         task.resume()
     }
 
+    // MARK: - Fetch Methods
+
     func fetchSimpleWeather(
         cityName: String,
         completion: @escaping (Result<SimpleWeather, NetworkManagerError>) -> Void
@@ -88,10 +90,9 @@ struct NetworkManager {
         cityName: String,
         completion: @escaping (Result<DetailWeather, NetworkManagerError>) -> Void
     ) {
-        guard let regionCode = Locale.current.languageCode else {
-            return
-        }
-        let urlString = "\(K.openWeatherURL)&q=\(cityName)&lang=\(regionCode)"
+        let languageCode = LanguageCode().rawValue
+        
+        let urlString = "\(K.openWeatherURL)&q=\(cityName)&lang=\(languageCode)"
         
         performRequest(with: urlString) { result in
             switch result {
