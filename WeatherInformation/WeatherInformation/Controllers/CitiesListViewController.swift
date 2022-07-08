@@ -96,7 +96,7 @@ final class CitiesListViewController: UIViewController {
                 self?.presentNetworkError(with: networkError)
             }
             self?.simpleWeathers.sort(
-                by: { $0.cityName < $1.cityName }
+                by: { $0.cityName.localized < $1.cityName.localized }
             )
             self?.loadingView.isLoading = false
             self?.citiesWeatherTableView.reloadData()
