@@ -170,13 +170,13 @@ final class WeatherDetailViewController: UIViewController {
         guard let _detailWeather = detailWeather else {
             return
         }
-        temperatureLabel.text = "current temperature: \(_detailWeather.currentTemperature)˚C"
-        feelingTemperatureLabel.text = "feeling temperature: \(_detailWeather.feelingTemperature)˚C"
-        currentHumidityLabel.text = "current humidity: \(_detailWeather.currentHumidity)%"
-        minimumTemperatureLabel.text = "minimum Temperature: \(_detailWeather.minimumTemperature)˚C"
-        maximumTemperatureLabel.text = "maximum Temperature: \(_detailWeather.maximumTemperature)˚C"
-        airPressureLabel.text = "air pressure: \(_detailWeather.airPressure)hPa"
-        windSpeedLabel.text = "wind speed: \(_detailWeather.windSpeed)m/s"
+        temperatureLabel.text = "current temperature: " + "\(_detailWeather.currentTemperature)˚C"
+        feelingTemperatureLabel.text = "feeling temperature: " + "\(_detailWeather.feelingTemperature)˚C"
+        currentHumidityLabel.text = "current humidity: " + "\(_detailWeather.currentHumidity)%"
+        minimumTemperatureLabel.text = "minimum Temperature: " + "\(_detailWeather.minimumTemperature)˚C"
+        maximumTemperatureLabel.text = "maximum Temperature: " + "\(_detailWeather.maximumTemperature)˚C"
+        airPressureLabel.text = "air pressure: " + "\(_detailWeather.airPressure)hPa"
+        windSpeedLabel.text = "wind speed: " + "\(_detailWeather.windSpeed)m/s"
         descriptionLabel.text = "\(_detailWeather.description)"
         CacheManager.getWeatherIcon(iconName: _detailWeather.iconName) {  [weak self] iconImage in
             DispatchQueue.main.async {
