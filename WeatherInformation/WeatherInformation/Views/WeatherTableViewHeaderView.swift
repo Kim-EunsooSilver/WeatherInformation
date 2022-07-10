@@ -131,4 +131,20 @@ class WeatherTableViewHeaderView: UITableViewHeaderFooterView {
             informationStackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10)
         ])
     }
+
+    // MARK: - Methods
+
+    func setProperties(detailWeather: DetailWeather?) {
+        guard let _detailWeather = detailWeather else {
+            return
+        }
+        myLocationLabel.text = "My Location".localized + "(" + _detailWeather.cityName + ")"
+        descriptionLabel.text = _detailWeather.description
+        temperatureLabel.text = "current temperature: ".localized + "\(_detailWeather.currentTemperature)˚C"
+        feelingTemperatureLabel.text = "feeling temperature: ".localized + "\(_detailWeather.feelingTemperature)˚C"
+        currentHumidityLabel.text = "current humidity: ".localized + "\(_detailWeather.currentHumidity)%"
+        minimumTemperatureLabel.text = "minimum Temperature: ".localized + "\(_detailWeather.minimumTemperature)˚C"
+        maximumTemperatureLabel.text = "maximum Temperature: ".localized + "\(_detailWeather.maximumTemperature)˚C"
+        windSpeedLabel.text = "wind speed: ".localized + "\(_detailWeather.windSpeed)m/s"
+    }
 }
