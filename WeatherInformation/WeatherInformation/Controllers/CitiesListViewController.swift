@@ -23,7 +23,7 @@ final class CitiesListViewController: UIViewController {
         return loadingView
     }()
     private let citiesWeatherTableView: UITableView = {
-        let tableView = UITableView()
+        let tableView = UITableView(frame: .zero, style: .grouped)
         return tableView
     }()
 
