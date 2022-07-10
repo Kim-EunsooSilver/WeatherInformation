@@ -13,6 +13,7 @@ final class CitiesListViewController: UIViewController {
     // MARK: - Properties
 
     private var simpleWeathers: [SimpleWeather] = []
+    private let locationManager = CLLocationManager()
 
     // MARK: - UI Properties
 
@@ -32,6 +33,7 @@ final class CitiesListViewController: UIViewController {
 
         setLayout()
         setTableView()
+        setLocationManager()
     }
     override func viewWillAppear(_ animated: Bool) {
         self.loadingView.isLoading = true
@@ -70,6 +72,12 @@ final class CitiesListViewController: UIViewController {
             WeatherTableViewCell.self,
             forCellReuseIdentifier: K.weatherCellID
         )
+    
+    // MARK: - setLocationManager
+
+    private func setLocationManager() {
+        locationManager.desiredAccuracy = kCLLocationAccuracyKilometer
+        locationManager.delegate = self
     }
 
     // MARK: - Methods
