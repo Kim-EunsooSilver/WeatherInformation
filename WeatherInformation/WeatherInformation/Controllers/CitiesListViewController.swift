@@ -13,6 +13,7 @@ final class CitiesListViewController: UIViewController {
     // MARK: - Properties
 
     private var simpleWeathers: [SimpleWeather] = []
+    private var myLocationWeather: DetailWeather?
     private let locationManager = CLLocationManager()
 
     // MARK: - UI Properties
@@ -113,6 +114,22 @@ final class CitiesListViewController: UIViewController {
         }
     }
     
+    private func getMyLocationWeather(location: CLLocation) {
+        let latitude = String(location.coordinate.latitude)
+        let longitude = String(location.coordinate.longitude)
+        NetworkManager.shared.fetchDetailWeather(latitude: latitude, longitude: longitude) { [weak self] result in
+            switch result {
+                case .success(let detailWeather):
+                    self?.myLocationWeather = detailWeather
+                    DispatchQueue.main.async {
+                        self?.citiesWeatherTableView.reloadData()
+                    }
+                case .failure(let error):
+                    self?.presentNetworkError(with: error)
+            }
+        }
+    }
+    
     private func resetSimpleWeathers() {
         simpleWeathers = []
     }
@@ -157,6 +174,13 @@ extension CitiesListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 120
     }
+    
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        if locationManager.authorizationStatus == .denied {
+            return 0
+        } else {
+            return 200
+        }
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let nextVC = WeatherDetailViewController()
         nextVC.cityName = simpleWeathers[indexPath.row].cityName
