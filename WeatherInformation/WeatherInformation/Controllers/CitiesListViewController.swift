@@ -74,6 +74,11 @@ final class CitiesListViewController: UIViewController {
             WeatherTableViewCell.self,
             forCellReuseIdentifier: K.weatherCellID
         )
+        citiesWeatherTableView.register(
+            WeatherTableViewHeaderView.self,
+            forHeaderFooterViewReuseIdentifier: K.weatherHeaderID
+        )
+    }
     
     // MARK: - setLocationManager
 
@@ -147,6 +152,25 @@ extension CitiesListViewController: UITableViewDataSource {
         return simpleWeathers.count
     }
     
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        if locationManager.authorizationStatus == .denied {
+            return nil
+        }
+        let dequeuedHeader = tableView.dequeueReusableHeaderFooterView(withIdentifier: K.weatherHeaderID)
+        guard let header = dequeuedHeader as? WeatherTableViewHeaderView,
+              let detailWeather = myLocationWeather else {
+            return nil
+        }
+        header.setProperties(detailWeather: myLocationWeather)
+        CacheManager.getWeatherIcon(iconName: detailWeather.iconName) { iconImage in
+            DispatchQueue.main.async {
+                header.weatherIcon.image = iconImage
+            }
+        }
+        return header
+                
+    }
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let dequeuedCell = tableView.dequeueReusableCell(
             withIdentifier: K.weatherCellID,
@@ -181,6 +205,8 @@ extension CitiesListViewController: UITableViewDelegate {
         } else {
             return 200
         }
+    }
+    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let nextVC = WeatherDetailViewController()
         nextVC.cityName = simpleWeathers[indexPath.row].cityName
