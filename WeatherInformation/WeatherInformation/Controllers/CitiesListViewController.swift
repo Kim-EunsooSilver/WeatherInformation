@@ -188,3 +188,17 @@ extension CitiesListViewController: UITableViewDelegate {
     }
 
 }
+
+// MARK: - CLLocationManagerDelegate
+
+extension CitiesListViewController: CLLocationManagerDelegate {
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        if let location = locations.last {
+            getMyLocationWeather(location: location)
+        }
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        print(error)
+    }
+}
