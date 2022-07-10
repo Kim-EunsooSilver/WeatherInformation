@@ -9,6 +9,7 @@ import Foundation
 
 enum K {
     static let weatherCellID = "weatherCellID"
+    static let weatherHeaderID = "weatherHeaderID"
     static let cities = [
         "Gongju",
         "Gwangju",

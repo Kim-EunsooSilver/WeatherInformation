@@ -107,6 +107,28 @@ struct NetworkManager {
             }
         }
     }
+    
+    func fetchDetailWeather(
+        latitude: String,
+        longitude: String,
+        completion: @escaping (Result<DetailWeather, NetworkManagerError>) -> Void
+    ) {
+        let languageCode = LanguageCode().rawValue
+        
+        let urlString = "\(K.openWeatherURL)&lat=\(latitude)&lon=\(longitude)&lang=\(languageCode)"
+        performRequest(with: urlString) { result in
+            switch result {
+                case .success(let data):
+                    guard let detailWeather = parseToDetailWeather(data) else {
+                        completion(.failure(.parseError))
+                        return
+                    }
+                    completion(.success(detailWeather))
+                case .failure(let error):
+                    completion(.failure(error))
+            }
+        }
+    }
 
 }
 

@@ -6,12 +6,15 @@
 //
 
 import UIKit
+import CoreLocation
 
 final class CitiesListViewController: UIViewController {
 
     // MARK: - Properties
 
     private var simpleWeathers: [SimpleWeather] = []
+    private var myLocationWeather: DetailWeather?
+    private let locationManager = CLLocationManager()
 
     // MARK: - UI Properties
 
@@ -20,7 +23,7 @@ final class CitiesListViewController: UIViewController {
         return loadingView
     }()
     private let citiesWeatherTableView: UITableView = {
-        let tableView = UITableView()
+        let tableView = UITableView(frame: .zero, style: .grouped)
         return tableView
     }()
 
@@ -31,11 +34,13 @@ final class CitiesListViewController: UIViewController {
 
         setLayout()
         setTableView()
+        setLocationManager()
     }
     override func viewWillAppear(_ animated: Bool) {
         self.loadingView.isLoading = true
         resetSimpleWeathers()
         getSimpleWeatherInformation()
+        getUserLocation()
     }
 
     // MARK: - setLayout
@@ -69,6 +74,17 @@ final class CitiesListViewController: UIViewController {
             WeatherTableViewCell.self,
             forCellReuseIdentifier: K.weatherCellID
         )
+        citiesWeatherTableView.register(
+            WeatherTableViewHeaderView.self,
+            forHeaderFooterViewReuseIdentifier: K.weatherHeaderID
+        )
+    }
+    
+    // MARK: - setLocationManager
+
+    private func setLocationManager() {
+        locationManager.desiredAccuracy = kCLLocationAccuracyKilometer
+        locationManager.delegate = self
     }
 
     // MARK: - Methods
@@ -103,8 +119,29 @@ final class CitiesListViewController: UIViewController {
         }
     }
     
+    private func getMyLocationWeather(location: CLLocation) {
+        let latitude = String(location.coordinate.latitude)
+        let longitude = String(location.coordinate.longitude)
+        NetworkManager.shared.fetchDetailWeather(latitude: latitude, longitude: longitude) { [weak self] result in
+            switch result {
+                case .success(let detailWeather):
+                    self?.myLocationWeather = detailWeather
+                    DispatchQueue.main.async {
+                        self?.citiesWeatherTableView.reloadData()
+                    }
+                case .failure(let error):
+                    self?.presentNetworkError(with: error)
+            }
+        }
+    }
+    
     private func resetSimpleWeathers() {
         simpleWeathers = []
+    }
+    
+    private func getUserLocation() {
+        locationManager.requestWhenInUseAuthorization()
+        locationManager.requestLocation()
     }
 }
 
@@ -113,6 +150,25 @@ final class CitiesListViewController: UIViewController {
 extension CitiesListViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return simpleWeathers.count
+    }
+    
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        if locationManager.authorizationStatus == .denied {
+            return nil
+        }
+        let dequeuedHeader = tableView.dequeueReusableHeaderFooterView(withIdentifier: K.weatherHeaderID)
+        guard let header = dequeuedHeader as? WeatherTableViewHeaderView,
+              let detailWeather = myLocationWeather else {
+            return nil
+        }
+        header.setProperties(detailWeather: myLocationWeather)
+        CacheManager.getWeatherIcon(iconName: detailWeather.iconName) { iconImage in
+            DispatchQueue.main.async {
+                header.weatherIcon.image = iconImage
+            }
+        }
+        return header
+                
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -142,10 +198,33 @@ extension CitiesListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 120
     }
+    
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        if locationManager.authorizationStatus == .denied {
+            return 0
+        } else {
+            return 200
+        }
+    }
+    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let nextVC = WeatherDetailViewController()
         nextVC.cityName = simpleWeathers[indexPath.row].cityName
         self.navigationController?.pushViewController(nextVC, animated: true)
     }
 
+}
+
+// MARK: - CLLocationManagerDelegate
+
+extension CitiesListViewController: CLLocationManagerDelegate {
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        if let location = locations.last {
+            getMyLocationWeather(location: location)
+        }
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        print(error)
+    }
 }
