@@ -91,6 +91,7 @@ final class CitiesListViewController: UIViewController {
 
     private func getSimpleWeatherInformation() {
         let group = DispatchGroup()
+        let semaphore = DispatchSemaphore(value: 1)
         let networkManager = NetworkManager.shared
         var networkError: NetworkManagerError?
         K.cities.forEach { cityName in
@@ -98,7 +99,9 @@ final class CitiesListViewController: UIViewController {
             networkManager.fetchSimpleWeather(cityName: cityName) { [weak self] result in
                 switch result {
                     case .success(let _simpleWeather):
+                        semaphore.wait()
                         self?.simpleWeathers.append(_simpleWeather)
+                        semaphore.signal()
                         group.leave()
                     case .failure(let error):
                         networkError = error
