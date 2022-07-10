@@ -39,6 +39,7 @@ final class CitiesListViewController: UIViewController {
         self.loadingView.isLoading = true
         resetSimpleWeathers()
         getSimpleWeatherInformation()
+        getUserLocation()
     }
 
     // MARK: - setLayout
@@ -114,6 +115,11 @@ final class CitiesListViewController: UIViewController {
     
     private func resetSimpleWeathers() {
         simpleWeathers = []
+    }
+    
+    private func getUserLocation() {
+        locationManager.requestWhenInUseAuthorization()
+        locationManager.requestLocation()
     }
 }
 
