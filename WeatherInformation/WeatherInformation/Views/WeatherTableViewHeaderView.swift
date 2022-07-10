@@ -81,4 +81,41 @@ class WeatherTableViewHeaderView: UITableViewHeaderFooterView {
         informationStackView.distribution = .equalSpacing
         return informationStackView
     }()
+    private func setLayout() {
+        contentView.backgroundColor = .white
+        
+        contentView.addSubview(myLocationLabel)
+        contentView.addSubview(iconAndDescriptionStackView)
+        contentView.addSubview(informationStackView)
+        
+        myLocationLabel.translatesAutoresizingMaskIntoConstraints = false
+        descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
+        weatherIcon.translatesAutoresizingMaskIntoConstraints = false
+        temperatureLabel.translatesAutoresizingMaskIntoConstraints = false
+        feelingTemperatureLabel.translatesAutoresizingMaskIntoConstraints = false
+        minimumTemperatureLabel.translatesAutoresizingMaskIntoConstraints = false
+        maximumTemperatureLabel.translatesAutoresizingMaskIntoConstraints = false
+        currentHumidityLabel.translatesAutoresizingMaskIntoConstraints = false
+        windSpeedLabel.translatesAutoresizingMaskIntoConstraints = false
+        iconAndDescriptionStackView.translatesAutoresizingMaskIntoConstraints = false
+        informationStackView.translatesAutoresizingMaskIntoConstraints = false
+        
+        NSLayoutConstraint.activate([
+            myLocationLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10),
+            myLocationLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
+            myLocationLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: 10),
+            
+            weatherIcon.widthAnchor.constraint(equalToConstant: 100),
+            weatherIcon.heightAnchor.constraint(equalToConstant: 100),
+            
+            iconAndDescriptionStackView.topAnchor.constraint(equalTo: myLocationLabel.bottomAnchor, constant: 10),
+            iconAndDescriptionStackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
+            iconAndDescriptionStackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10),
+            
+            informationStackView.topAnchor.constraint(equalTo: myLocationLabel.bottomAnchor, constant: 10),
+            informationStackView.leadingAnchor.constraint(equalTo: iconAndDescriptionStackView.trailingAnchor, constant: 5),
+            informationStackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10),
+            informationStackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10)
+        ])
+    }
 }
