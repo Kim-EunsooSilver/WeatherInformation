@@ -81,6 +81,8 @@ final class CitiesListViewController: UIViewController {
             WeatherTableViewHeaderView.self,
             forHeaderFooterViewReuseIdentifier: K.weatherHeaderID
         )
+        citiesWeatherTableView.refreshControl = UIRefreshControl()
+        citiesWeatherTableView.refreshControl?.addTarget(self, action: #selector(pullToRefresh(_:)), for: .valueChanged)
     }
     
     // MARK: - setLocationManager
@@ -144,6 +146,14 @@ final class CitiesListViewController: UIViewController {
     private func getUserLocation() {
         locationManager.requestWhenInUseAuthorization()
         locationManager.requestLocation()
+    }
+    
+    @objc private func pullToRefresh(_ sender: Any) {
+        getSimpleWeatherInformation { [weak self] in
+            self?.citiesWeatherTableView.refreshControl?.endRefreshing()
+            self?.citiesWeatherTableView.reloadData()
+        }
+        
     }
 }
 
