@@ -35,8 +35,7 @@ final class CitiesListViewController: UIViewController {
         setLayout()
         setTableView()
         setLocationManager()
-    }
-    override func viewWillAppear(_ animated: Bool) {
+        
         self.loadingView.isLoading = true
         
         getSimpleWeatherInformation { [weak self] in
@@ -146,9 +145,11 @@ final class CitiesListViewController: UIViewController {
     private func getUserLocation() {
         locationManager.requestWhenInUseAuthorization()
         locationManager.requestLocation()
+        
     }
     
     @objc private func pullToRefresh(_ sender: Any) {
+        getUserLocation()
         getSimpleWeatherInformation { [weak self] in
             self?.citiesWeatherTableView.refreshControl?.endRefreshing()
             self?.citiesWeatherTableView.reloadData()
