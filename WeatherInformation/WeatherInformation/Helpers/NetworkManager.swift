@@ -85,7 +85,7 @@ struct NetworkManager {
             }
         }
     }
-    
+
     func fetchDetailWeather(
         cityName: String,
         completion: @escaping (Result<DetailWeather, NetworkManagerError>) -> Void
@@ -107,7 +107,7 @@ struct NetworkManager {
             }
         }
     }
-    
+
     func fetchDetailWeather(
         latitude: String,
         longitude: String,
@@ -129,7 +129,7 @@ struct NetworkManager {
             }
         }
     }
-    
+
     func fetchTranslatedText(
         _ text: String,
         completion: @escaping (Result<String, NetworkManagerError>) -> Void

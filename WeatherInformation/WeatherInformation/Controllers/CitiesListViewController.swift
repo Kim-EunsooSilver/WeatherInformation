@@ -13,6 +13,7 @@ final class CitiesListViewController: UIViewController {
     // MARK: - Properties
 
     private var simpleWeathers: [SimpleWeather] = []
+    private let networkManager = NetworkManager.shared
     private var myLocationWeather: DetailWeather?
     private let locationManager = CLLocationManager()
 
@@ -81,7 +82,11 @@ final class CitiesListViewController: UIViewController {
             forHeaderFooterViewReuseIdentifier: K.weatherHeaderID
         )
         citiesWeatherTableView.refreshControl = UIRefreshControl()
-        citiesWeatherTableView.refreshControl?.addTarget(self, action: #selector(pullToRefresh(_:)), for: .valueChanged)
+        citiesWeatherTableView.refreshControl?.addTarget(
+            self,
+            action: #selector(pullToRefresh(_:)),
+            for: .valueChanged
+        )
     }
     
     // MARK: - setLocationManager
@@ -96,7 +101,6 @@ final class CitiesListViewController: UIViewController {
     private func getSimpleWeatherInformation(completion: @escaping () -> Void) {
         let group = DispatchGroup()
         let semaphore = DispatchSemaphore(value: 1)
-        let networkManager = NetworkManager.shared
         var networkError: NetworkManagerError?
         var fetchedSimpleWeathers: [SimpleWeather] = []
         K.cities.forEach { cityName in
@@ -125,11 +129,11 @@ final class CitiesListViewController: UIViewController {
             completion()
         }
     }
-    
+
     private func getMyLocationWeather(location: CLLocation) {
         let latitude = String(location.coordinate.latitude)
         let longitude = String(location.coordinate.longitude)
-        NetworkManager.shared.fetchDetailWeather(latitude: latitude, longitude: longitude) { [weak self] result in
+        networkManager.fetchDetailWeather(latitude: latitude, longitude: longitude) { [weak self] result in
             switch result {
                 case .success(let detailWeather):
                     self?.myLocationWeather = detailWeather
@@ -139,13 +143,13 @@ final class CitiesListViewController: UIViewController {
             }
         }
     }
-        
+
     private func getUserLocation() {
         locationManager.requestWhenInUseAuthorization()
         locationManager.requestLocation()
         
     }
-    
+
     @objc private func pullToRefresh(_ sender: Any) {
         getUserLocation()
         getSimpleWeatherInformation { [weak self] in
@@ -153,12 +157,12 @@ final class CitiesListViewController: UIViewController {
             self?.citiesWeatherTableView.reloadData()
         }
     }
-    
+
     private func translateCityName() {
         guard let translatingCityName = myLocationWeather?.cityName else {
             return
         }
-        NetworkManager.shared.fetchTranslatedText(translatingCityName) { [weak self] result in
+        networkManager.fetchTranslatedText(translatingCityName) { [weak self] result in
             switch result {
                 case .success(let cityName):
                     self?.myLocationWeather?.cityName = cityName
@@ -195,9 +199,8 @@ extension CitiesListViewController: UITableViewDataSource {
             }
         }
         return header
-                
     }
-    
+
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let dequeuedCell = tableView.dequeueReusableCell(
             withIdentifier: K.weatherCellID,
@@ -207,7 +210,6 @@ extension CitiesListViewController: UITableViewDataSource {
             return UITableViewCell()
         }
         let simpleWeather = simpleWeathers[indexPath.row]
-        
         cell.setProperties(simpleWeather: simpleWeather)
         CacheManager.getWeatherIcon(iconName: simpleWeather.iconName) { iconImage in
             DispatchQueue.main.async {
@@ -225,7 +227,7 @@ extension CitiesListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 120
     }
-    
+
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         if locationManager.authorizationStatus == .denied {
             return 0
@@ -233,13 +235,12 @@ extension CitiesListViewController: UITableViewDelegate {
             return 200
         }
     }
-    
+
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let nextVC = WeatherDetailViewController()
         nextVC.cityName = simpleWeathers[indexPath.row].cityName
         self.navigationController?.pushViewController(nextVC, animated: true)
     }
-
 }
 
 // MARK: - CLLocationManagerDelegate
@@ -250,7 +251,7 @@ extension CitiesListViewController: CLLocationManagerDelegate {
             getMyLocationWeather(location: location)
         }
     }
-    
+
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         print(error)
     }

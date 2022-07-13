@@ -86,6 +86,7 @@ final class WeatherDetailViewController: UIViewController {
     }()
 
     // MARK: - viewLifeCycle
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -101,7 +102,7 @@ final class WeatherDetailViewController: UIViewController {
             
         }
     }
-    
+
     // MARK: - setLayout
 
     private func setLayout() {
@@ -164,7 +165,7 @@ final class WeatherDetailViewController: UIViewController {
             }
         }
     }
-    
+
     private func setProperties() {
         cityNameLabel.text = cityName?.localized
         guard let _detailWeather = detailWeather else {

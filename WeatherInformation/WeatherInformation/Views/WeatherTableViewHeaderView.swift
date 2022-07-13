@@ -61,7 +61,6 @@ class WeatherTableViewHeaderView: UITableViewHeaderFooterView {
         label.textAlignment = .right
         return label
     }()
-
     private lazy var iconAndDescriptionStackView: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [weatherIcon, descriptionLabel])
         stackView.axis = .vertical
@@ -71,8 +70,20 @@ class WeatherTableViewHeaderView: UITableViewHeaderFooterView {
         return stackView
     }()
     private lazy var informationStackView: UIStackView = {
-        let leftStackView = UIStackView(arrangedSubviews: [temperatureLabel, minimumTemperatureLabel, currentHumidityLabel])
-        let rightStackView = UIStackView(arrangedSubviews: [feelingTemperatureLabel, maximumTemperatureLabel, windSpeedLabel])
+        let leftStackView = UIStackView(
+            arrangedSubviews: [
+                temperatureLabel,
+                minimumTemperatureLabel,
+                currentHumidityLabel
+            ]
+        )
+        let rightStackView = UIStackView(
+            arrangedSubviews: [
+                feelingTemperatureLabel,
+                maximumTemperatureLabel,
+                windSpeedLabel
+            ]
+        )
         
         [leftStackView, rightStackView].forEach { stackView in
             stackView.axis = .vertical
