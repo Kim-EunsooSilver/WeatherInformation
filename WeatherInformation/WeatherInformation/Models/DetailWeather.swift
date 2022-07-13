@@ -18,4 +18,5 @@ struct DetailWeather {
     let airPressure: Int
     let windSpeed: Int
     let description: String
+    let timeOfData: String
 }
