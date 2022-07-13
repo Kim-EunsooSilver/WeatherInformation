@@ -172,6 +172,14 @@ extension NetworkManager {
             let airPressure = Int(decodedWeatherData.main.pressure)
             let windSpeed = Int(decodedWeatherData.wind.speed)
             let description = decodedWeatherData.weather[0].description
+            let timeOfData: String = {
+                let formatter = DateFormatter()
+                formatter.dateFormat = "HH:mm"
+                
+                let timeInterval = TimeInterval(String(decodedWeatherData.timeOfData)) ?? 0.0
+                let time = Date(timeIntervalSince1970: timeInterval)
+                return formatter.string(from: time)
+            }()
             
             let detailWeather = DetailWeather(
                 cityName: cityName,
@@ -183,7 +191,8 @@ extension NetworkManager {
                 maximumTemperature: maximumTemperature,
                 airPressure: airPressure,
                 windSpeed: windSpeed,
-                description: description
+                description: description,
+                timeOfData: timeOfData
             )
             return detailWeather
         } catch {
