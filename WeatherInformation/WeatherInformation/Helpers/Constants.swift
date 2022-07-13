@@ -37,4 +37,7 @@ enum K {
         static let iconURL = "https://openweathermap.org/img/wn/"
         static let imageSize2x = "@2x.png"
     }
+    enum Translation {
+        static let translationURL = "https://translation.googleapis.com/language/translate/v2?key=AIzaSyA8JmRyNQZtmIDfMu5MJK7AhOpHNgQ41ic"
+    }
 }
