@@ -22,7 +22,7 @@ final class LoadingView: UIView {
 
     private let backgroundView: UIView = {
         let view = UIView()
-        view.backgroundColor = .white
+        view.backgroundColor = .systemGroupedBackground
         return view
     }()
     private let indicatorView: UIActivityIndicatorView = {
