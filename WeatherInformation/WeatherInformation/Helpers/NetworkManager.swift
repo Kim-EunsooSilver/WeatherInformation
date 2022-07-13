@@ -129,6 +129,33 @@ struct NetworkManager {
             }
         }
     }
+    
+    func fetchTranslatedText(
+        _ text: String,
+        completion: @escaping (Result<String, NetworkManagerError>) -> Void
+    ) {
+        let targetLanguage = Locale.current.languageCode ?? "en"
+        let defaultLanguage = "en"
+        if targetLanguage == defaultLanguage {
+            return
+        }
+        let urlString = "\(K.Translation.translationURL)&q=\(text)&target=\(targetLanguage)&source=\(defaultLanguage)"
+        performRequest(with: urlString) { result in
+            switch result {
+                case .success(let data):
+                    let decoder = JSONDecoder()
+                    do {
+                        let decodedData = try decoder.decode(TranslationData.self, from: data)
+                        let translatedText = decodedData.data.translations[0].translatedText
+                        completion(.success(translatedText))
+                    } catch {
+                        completion(.failure(.parseError))
+                    }
+                case .failure(let error):
+                    completion(.failure(error))
+            }
+        }
+    }
 
 }
 
