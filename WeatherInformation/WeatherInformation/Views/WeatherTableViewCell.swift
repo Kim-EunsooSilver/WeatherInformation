@@ -36,7 +36,7 @@ final class WeatherTableViewCell: UITableViewCell {
         let descriptionStackView = UIStackView(arrangedSubviews: [temperatureLabel, humidityLabel])
         descriptionStackView.axis = .horizontal
         descriptionStackView.alignment = .fill
-        descriptionStackView.distribution = .fill
+        descriptionStackView.distribution = .fillEqually
         descriptionStackView.spacing = 5
         
         let informationStackView = UIStackView(
