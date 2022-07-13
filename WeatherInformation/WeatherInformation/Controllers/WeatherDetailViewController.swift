@@ -91,6 +91,7 @@ final class WeatherDetailViewController: UIViewController {
         super.viewDidLoad()
         
         setLayout()
+        navigationController?.isNavigationBarHidden = false
     }
     override func viewWillAppear(_ animated: Bool) {
         loadingView.isLoading = true

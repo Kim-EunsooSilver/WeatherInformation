@@ -45,6 +45,9 @@ final class CitiesListViewController: UIViewController {
         }
         getUserLocation()
     }
+    override func viewWillAppear(_ animated: Bool) {
+        navigationController?.isNavigationBarHidden = true
+    }
 
     // MARK: - setLayout
 
