@@ -158,6 +158,6 @@ class WeatherTableViewHeaderView: UITableViewHeaderFooterView {
         minimumTemperatureLabel.text = "minimum Temperature: ".localized + "\(_detailWeather.minimumTemperature)˚C"
         maximumTemperatureLabel.text = "maximum Temperature: ".localized + "\(_detailWeather.maximumTemperature)˚C"
         windSpeedLabel.text = "wind speed: ".localized + "\(_detailWeather.windSpeed)m/s"
-        updatedTimeLabel.text = "updated time: " + _detailWeather.timeOfData
+        updatedTimeLabel.text = "updated time: ".localized + _detailWeather.timeOfData
     }
 }
