@@ -12,6 +12,15 @@ struct WeatherData: Codable {
     let weather: [Weather]
     let name: String
     let wind: Wind
+    let timeOfData: Int
+    
+    enum CodingKeys: String, CodingKey {
+        case main
+        case weather
+        case name
+        case wind
+        case timeOfData = "dt"
+    }
 }
 
 struct Main: Codable {

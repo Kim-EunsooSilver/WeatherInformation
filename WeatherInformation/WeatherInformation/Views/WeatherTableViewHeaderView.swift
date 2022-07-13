@@ -55,6 +55,13 @@ class WeatherTableViewHeaderView: UITableViewHeaderFooterView {
         label.adjustsFontSizeToFitWidth = true
         return label
     }()
+    private let updatedTimeLabel: UILabel = {
+        let label = UILabel()
+        label.adjustsFontSizeToFitWidth = true
+        label.textAlignment = .right
+        return label
+    }()
+
     private lazy var iconAndDescriptionStackView: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [weatherIcon, descriptionLabel])
         stackView.axis = .vertical
@@ -100,6 +107,7 @@ class WeatherTableViewHeaderView: UITableViewHeaderFooterView {
         contentView.addSubview(myLocationLabel)
         contentView.addSubview(iconAndDescriptionStackView)
         contentView.addSubview(informationStackView)
+        contentView.addSubview(updatedTimeLabel)
         
         myLocationLabel.translatesAutoresizingMaskIntoConstraints = false
         descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -110,6 +118,7 @@ class WeatherTableViewHeaderView: UITableViewHeaderFooterView {
         maximumTemperatureLabel.translatesAutoresizingMaskIntoConstraints = false
         currentHumidityLabel.translatesAutoresizingMaskIntoConstraints = false
         windSpeedLabel.translatesAutoresizingMaskIntoConstraints = false
+        updatedTimeLabel.translatesAutoresizingMaskIntoConstraints = false
         iconAndDescriptionStackView.translatesAutoresizingMaskIntoConstraints = false
         informationStackView.translatesAutoresizingMaskIntoConstraints = false
         
@@ -128,7 +137,10 @@ class WeatherTableViewHeaderView: UITableViewHeaderFooterView {
             informationStackView.topAnchor.constraint(equalTo: myLocationLabel.bottomAnchor, constant: 10),
             informationStackView.leadingAnchor.constraint(equalTo: iconAndDescriptionStackView.trailingAnchor, constant: 5),
             informationStackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10),
-            informationStackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10)
+            
+            updatedTimeLabel.topAnchor.constraint(equalTo: informationStackView.bottomAnchor, constant: 5),
+            updatedTimeLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10),
+            updatedTimeLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10)
         ])
     }
 
@@ -146,5 +158,6 @@ class WeatherTableViewHeaderView: UITableViewHeaderFooterView {
         minimumTemperatureLabel.text = "minimum Temperature: ".localized + "\(_detailWeather.minimumTemperature)˚C"
         maximumTemperatureLabel.text = "maximum Temperature: ".localized + "\(_detailWeather.maximumTemperature)˚C"
         windSpeedLabel.text = "wind speed: ".localized + "\(_detailWeather.windSpeed)m/s"
+        updatedTimeLabel.text = "updated time: " + _detailWeather.timeOfData
     }
 }

@@ -35,11 +35,13 @@ final class CitiesListViewController: UIViewController {
         setLayout()
         setTableView()
         setLocationManager()
-    }
-    override func viewWillAppear(_ animated: Bool) {
+        
         self.loadingView.isLoading = true
-        resetSimpleWeathers()
-        getSimpleWeatherInformation()
+        
+        getSimpleWeatherInformation { [weak self] in
+            self?.loadingView.isLoading = false
+            self?.citiesWeatherTableView.reloadData()
+        }
         getUserLocation()
     }
 
@@ -78,6 +80,8 @@ final class CitiesListViewController: UIViewController {
             WeatherTableViewHeaderView.self,
             forHeaderFooterViewReuseIdentifier: K.weatherHeaderID
         )
+        citiesWeatherTableView.refreshControl = UIRefreshControl()
+        citiesWeatherTableView.refreshControl?.addTarget(self, action: #selector(pullToRefresh(_:)), for: .valueChanged)
     }
     
     // MARK: - setLocationManager
@@ -89,18 +93,19 @@ final class CitiesListViewController: UIViewController {
 
     // MARK: - Methods
 
-    private func getSimpleWeatherInformation() {
+    private func getSimpleWeatherInformation(completion: @escaping () -> Void) {
         let group = DispatchGroup()
         let semaphore = DispatchSemaphore(value: 1)
         let networkManager = NetworkManager.shared
         var networkError: NetworkManagerError?
+        var fetchedSimpleWeathers: [SimpleWeather] = []
         K.cities.forEach { cityName in
             group.enter()
-            networkManager.fetchSimpleWeather(cityName: cityName) { [weak self] result in
+            networkManager.fetchSimpleWeather(cityName: cityName) { result in
                 switch result {
                     case .success(let _simpleWeather):
                         semaphore.wait()
-                        self?.simpleWeathers.append(_simpleWeather)
+                        fetchedSimpleWeathers.append(_simpleWeather)
                         semaphore.signal()
                         group.leave()
                     case .failure(let error):
@@ -114,11 +119,10 @@ final class CitiesListViewController: UIViewController {
             if networkError != nil {
                 self?.presentNetworkError(with: networkError)
             }
-            self?.simpleWeathers.sort(
+            self?.simpleWeathers = fetchedSimpleWeathers.sorted(
                 by: { $0.cityName.localized < $1.cityName.localized }
             )
-            self?.loadingView.isLoading = false
-            self?.citiesWeatherTableView.reloadData()
+            completion()
         }
     }
     
@@ -137,14 +141,20 @@ final class CitiesListViewController: UIViewController {
             }
         }
     }
-    
-    private func resetSimpleWeathers() {
-        simpleWeathers = []
-    }
-    
+        
     private func getUserLocation() {
         locationManager.requestWhenInUseAuthorization()
         locationManager.requestLocation()
+        
+    }
+    
+    @objc private func pullToRefresh(_ sender: Any) {
+        getUserLocation()
+        getSimpleWeatherInformation { [weak self] in
+            self?.citiesWeatherTableView.refreshControl?.endRefreshing()
+            self?.citiesWeatherTableView.reloadData()
+        }
+        
     }
 }
 
