@@ -32,8 +32,12 @@ enum K {
         "Cheongju",
         "Chuncheon"
     ]
-    static let openWeatherURL = "https://api.openweathermap.org/data/2.5/weather?appid=d8cae5e810621d48d8d9a6c297cfa910&units=metric"
-    static let iconURL = "https://openweathermap.org/img/wn/"
-    static let imageSize2x = "@2x.png"
-    
+    enum OpenWeather {
+        static let weatherURL = "https://api.openweathermap.org/data/2.5/weather?appid=d8cae5e810621d48d8d9a6c297cfa910&units=metric"
+        static let iconURL = "https://openweathermap.org/img/wn/"
+        static let imageSize2x = "@2x.png"
+    }
+    enum Translation {
+        static let translationURL = "https://translation.googleapis.com/language/translate/v2?key=AIzaSyA8JmRyNQZtmIDfMu5MJK7AhOpHNgQ41ic"
+    }
 }
