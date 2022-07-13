@@ -54,7 +54,7 @@ struct NetworkManager {
         cityName: String,
         completion: @escaping (Result<SimpleWeather, NetworkManagerError>) -> Void
     ) {
-        let urlString = "\(K.openWeatherURL)&q=\(cityName)"
+        let urlString = "\(K.OpenWeather.weatherURL)&q=\(cityName)"
         
         performRequest(with: urlString) { result in
             switch result {
@@ -74,7 +74,7 @@ struct NetworkManager {
         iconName: String,
         completion: @escaping (Result<Data, NetworkManagerError>) -> Void
     ) {
-        let urlString = K.iconURL + iconName + K.imageSize2x
+        let urlString = K.OpenWeather.iconURL + iconName + K.OpenWeather.imageSize2x
         performRequest(with: urlString) { result in
             switch result {
                 case .success(let data):
@@ -92,7 +92,7 @@ struct NetworkManager {
     ) {
         let languageCode = LanguageCode().rawValue
         
-        let urlString = "\(K.openWeatherURL)&q=\(cityName)&lang=\(languageCode)"
+        let urlString = "\(K.OpenWeather.weatherURL)&q=\(cityName)&lang=\(languageCode)"
         
         performRequest(with: urlString) { result in
             switch result {
@@ -115,7 +115,7 @@ struct NetworkManager {
     ) {
         let languageCode = LanguageCode().rawValue
         
-        let urlString = "\(K.openWeatherURL)&lat=\(latitude)&lon=\(longitude)&lang=\(languageCode)"
+        let urlString = "\(K.OpenWeather.weatherURL)&lat=\(latitude)&lon=\(longitude)&lang=\(languageCode)"
         performRequest(with: urlString) { result in
             switch result {
                 case .success(let data):
