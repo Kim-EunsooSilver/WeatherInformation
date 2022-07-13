@@ -133,9 +133,7 @@ final class CitiesListViewController: UIViewController {
             switch result {
                 case .success(let detailWeather):
                     self?.myLocationWeather = detailWeather
-                    DispatchQueue.main.async {
-                        self?.citiesWeatherTableView.reloadData()
-                    }
+                    self?.translateCityName()
                 case .failure(let error):
                     self?.presentNetworkError(with: error)
             }
@@ -154,7 +152,23 @@ final class CitiesListViewController: UIViewController {
             self?.citiesWeatherTableView.refreshControl?.endRefreshing()
             self?.citiesWeatherTableView.reloadData()
         }
-        
+    }
+    
+    private func translateCityName() {
+        guard let translatingCityName = myLocationWeather?.cityName else {
+            return
+        }
+        NetworkManager.shared.fetchTranslatedText(translatingCityName) { [weak self] result in
+            switch result {
+                case .success(let cityName):
+                    self?.myLocationWeather?.cityName = cityName
+                    DispatchQueue.main.async {
+                        self?.citiesWeatherTableView.reloadData()
+                    }
+                case .failure(let error):
+                    self?.presentNetworkError(with: error)
+            }
+        }
     }
 }
 

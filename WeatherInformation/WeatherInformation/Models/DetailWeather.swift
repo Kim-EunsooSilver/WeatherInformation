@@ -8,7 +8,7 @@
 import Foundation
 
 struct DetailWeather {
-    let cityName: String
+    var cityName: String
     let iconName: String
     let currentTemperature: Int
     let feelingTemperature: Int
