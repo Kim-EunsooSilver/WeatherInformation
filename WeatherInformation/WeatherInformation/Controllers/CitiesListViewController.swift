@@ -214,7 +214,7 @@ extension CitiesListViewController: UITableViewDataSource {
                 cell.weatherIcon.image = iconImage
             }
         }
-
+        cell.selectionStyle = .none
         return cell
     }
 }
