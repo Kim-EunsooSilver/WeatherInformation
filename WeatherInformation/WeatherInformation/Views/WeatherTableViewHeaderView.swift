@@ -7,7 +7,7 @@
 
 import UIKit
 
-class WeatherTableViewHeaderView: UITableViewHeaderFooterView {
+final class WeatherTableViewHeaderView: UITableViewHeaderFooterView {
 
     // MARK: - UI Properties
 
@@ -96,7 +96,7 @@ class WeatherTableViewHeaderView: UITableViewHeaderFooterView {
         informationStackView.axis = .horizontal
         informationStackView.spacing = 5
         informationStackView.alignment = .center
-        informationStackView.distribution = .equalSpacing
+        informationStackView.distribution = .fillEqually
         return informationStackView
     }()
 
