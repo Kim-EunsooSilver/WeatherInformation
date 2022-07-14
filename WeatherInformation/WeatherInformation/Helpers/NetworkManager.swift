@@ -14,7 +14,7 @@ enum NetworkManagerError: Error {
     case parseError
 }
 
-struct NetworkManager {
+final class NetworkManager {
 
     static let shared = NetworkManager()
 
@@ -56,10 +56,10 @@ struct NetworkManager {
     ) {
         let urlString = "\(K.OpenWeather.weatherURL)&q=\(cityName)"
         
-        performRequest(with: urlString) { result in
+        performRequest(with: urlString) { [weak self] result in
             switch result {
                 case .success(let data):
-                    guard let simpleWeather = parseToSimpleWeather(data) else {
+                    guard let simpleWeather = self?.parseToSimpleWeather(data) else {
                         completion(.failure(.parseError))
                         return
                     }
@@ -94,10 +94,10 @@ struct NetworkManager {
         
         let urlString = "\(K.OpenWeather.weatherURL)&q=\(cityName)&lang=\(languageCode)"
         
-        performRequest(with: urlString) { result in
+        performRequest(with: urlString) { [weak self] result in
             switch result {
                 case .success(let data):
-                    guard let detailWeather = parseToDetailWeather(data) else {
+                    guard let detailWeather = self?.parseToDetailWeather(data) else {
                         completion(.failure(.parseError))
                         return
                     }
@@ -116,10 +116,10 @@ struct NetworkManager {
         let languageCode = LanguageCode().rawValue
         
         let urlString = "\(K.OpenWeather.weatherURL)&lat=\(latitude)&lon=\(longitude)&lang=\(languageCode)"
-        performRequest(with: urlString) { result in
+        performRequest(with: urlString) { [weak self] result in
             switch result {
                 case .success(let data):
-                    guard let detailWeather = parseToDetailWeather(data) else {
+                    guard let detailWeather = self?.parseToDetailWeather(data) else {
                         completion(.failure(.parseError))
                         return
                     }
