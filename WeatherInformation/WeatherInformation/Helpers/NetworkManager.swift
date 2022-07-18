@@ -49,21 +49,19 @@ final class NetworkManager {
     }
 
     // MARK: - Fetch Methods
-
-    func fetchSimpleWeather(
-        cityName: String,
-        completion: @escaping (Result<SimpleWeather, NetworkManagerError>) -> Void
-    ) {
-        let urlString = "\(K.OpenWeather.weatherURL)&q=\(cityName)"
-        
+    
+    func fetchWeather(_ weatherInformation: WeatherInformation, cityName: String, completion: @escaping (Result<WeatherVO, NetworkManagerError>) -> Void) {
+        let languageCode = LanguageCode().rawValue
+        let urlString = "\(K.OpenWeather.weatherURL)&q=\(cityName)&lang=\(languageCode)"
         performRequest(with: urlString) { [weak self] result in
             switch result {
                 case .success(let data):
-                    guard let simpleWeather = self?.parseToSimpleWeather(data) else {
+                    guard let weather = self?.parseToWeather(weatherInformation, fetchedWeather: data) else {
                         completion(.failure(.parseError))
                         return
                     }
-                    completion(.success(simpleWeather))
+                    completion(.success(weather))
+                    break
                 case .failure(let error):
                     completion(.failure(error))
             }
@@ -80,28 +78,6 @@ final class NetworkManager {
                 case .success(let data):
                     completion(.success(data))
                     return
-                case .failure(let error):
-                    completion(.failure(error))
-            }
-        }
-    }
-
-    func fetchDetailWeather(
-        cityName: String,
-        completion: @escaping (Result<DetailWeather, NetworkManagerError>) -> Void
-    ) {
-        let languageCode = LanguageCode().rawValue
-        
-        let urlString = "\(K.OpenWeather.weatherURL)&q=\(cityName)&lang=\(languageCode)"
-        
-        performRequest(with: urlString) { [weak self] result in
-            switch result {
-                case .success(let data):
-                    guard let detailWeather = self?.parseToDetailWeather(data) else {
-                        completion(.failure(.parseError))
-                        return
-                    }
-                    completion(.success(detailWeather))
                 case .failure(let error):
                     completion(.failure(error))
             }
@@ -162,6 +138,17 @@ final class NetworkManager {
 extension NetworkManager {
 
     // MARK: - Parsing functions
+    
+    private func parseToWeather(_ weatherInformation: WeatherInformation, fetchedWeather: Data) -> WeatherVO? {
+        var weather: WeatherVO?
+        switch weatherInformation {
+            case .simpleWeather:
+                weather = parseToSimpleWeather(fetchedWeather)
+            case .detailWeather:
+                weather = parseToDetailWeather(fetchedWeather)
+        }
+        return weather
+    }
 
     private func parseToSimpleWeather(_ weatherData: Data) -> SimpleWeather? {
         let decoder = JSONDecoder()

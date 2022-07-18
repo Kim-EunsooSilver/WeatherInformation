@@ -156,9 +156,12 @@ final class WeatherDetailViewController: UIViewController {
         guard let cityName = cityName else {
             return
         }
-        networkManager.fetchDetailWeather(cityName: cityName) { [weak self] result in
+        networkManager.fetchWeather(.detailWeather, cityName: cityName) { [weak self] result in
             switch result {
-                case .success(let _detailWeather):
+                case .success(let detailWeather):
+                    guard let _detailWeather = detailWeather as? DetailWeather else {
+                        return
+                    }
                     self?.detailWeather = _detailWeather
                     completion()
                 case .failure(let error):

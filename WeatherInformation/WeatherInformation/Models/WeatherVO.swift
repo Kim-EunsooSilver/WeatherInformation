@@ -1,13 +1,30 @@
 //
-//  DetailWeather.swift
+//  WeatherVO.swift
 //  WeatherInformation
 //
-//  Created by Eunsoo KIM on 2022/07/05.
+//  Created by Eunsoo KIM on 2022/07/18.
 //
 
 import Foundation
 
-struct DetailWeather {
+
+protocol WeatherVO {
+    
+}
+
+enum WeatherInformation {
+    case simpleWeather
+    case detailWeather
+}
+
+struct SimpleWeather: WeatherVO {
+    let cityName: String
+    let iconName: String
+    let currentTemperature: Int
+    let currentHumidity: Int
+}
+
+struct DetailWeather: WeatherVO {
     var cityName: String
     let iconName: String
     let currentTemperature: Int

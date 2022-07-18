@@ -108,10 +108,15 @@ final class CitiesListViewController: UIViewController {
         var fetchedSimpleWeathers: [SimpleWeather] = []
         K.cities.forEach { cityName in
             group.enter()
-            networkManager.fetchSimpleWeather(cityName: cityName) { result in
+            networkManager.fetchWeather(.simpleWeather, cityName: cityName) { result in
                 switch result {
-                    case .success(let _simpleWeather):
+                    case .success(let simpleWeather):
                         semaphore.wait()
+                        guard let _simpleWeather = simpleWeather as? SimpleWeather else {
+                            semaphore.signal()
+                            group.leave()
+                            return
+                        }
                         fetchedSimpleWeathers.append(_simpleWeather)
                         semaphore.signal()
                         group.leave()
