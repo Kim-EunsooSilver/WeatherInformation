@@ -141,7 +141,7 @@ final class CitiesListViewController: UIViewController {
     private func getMyLocationWeather(location: CLLocation) {
         let latitude = String(location.coordinate.latitude)
         let longitude = String(location.coordinate.longitude)
-        networkManager.fetchDetailWeather(latitude: latitude, longitude: longitude) { [weak self] result in
+        networkManager.fetchWeather(latitude: latitude, longitude: longitude) { [weak self] result in
             switch result {
                 case .success(let detailWeather):
                     self?.myLocationWeather = detailWeather

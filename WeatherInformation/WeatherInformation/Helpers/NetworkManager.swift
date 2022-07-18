@@ -84,7 +84,7 @@ final class NetworkManager {
         }
     }
 
-    func fetchDetailWeather(
+    func fetchWeather(
         latitude: String,
         longitude: String,
         completion: @escaping (Result<DetailWeather, NetworkManagerError>) -> Void
