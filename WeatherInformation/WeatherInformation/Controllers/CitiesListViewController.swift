@@ -23,9 +23,10 @@ final class CitiesListViewController: UIViewController {
         let loadingView = LoadingView()
         return loadingView
     }()
-    private let citiesWeatherTableView: UITableView = {
-        let tableView = UITableView(frame: .zero, style: .grouped)
-        return tableView
+    private let citiesWeatherCollectionView: UICollectionView = {
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
+        
+        return collectionView
     }()
 
     // MARK: - viewLifeCycle
@@ -41,7 +42,7 @@ final class CitiesListViewController: UIViewController {
         
         getSimpleWeatherInformation { [weak self] in
             self?.loadingView.isLoading = false
-            self?.citiesWeatherTableView.reloadData()
+            self?.citiesWeatherCollectionView.reloadData()
         }
         getUserLocation()
     }
@@ -52,17 +53,17 @@ final class CitiesListViewController: UIViewController {
     // MARK: - setLayout
 
     private func setLayout() {
-        view.addSubview(citiesWeatherTableView)
+        view.addSubview(citiesWeatherCollectionView)
         view.addSubview(loadingView)
         
-        citiesWeatherTableView.translatesAutoresizingMaskIntoConstraints = false
+        citiesWeatherCollectionView.translatesAutoresizingMaskIntoConstraints = false
         loadingView.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
-            citiesWeatherTableView.topAnchor.constraint(equalTo: view.topAnchor),
-            citiesWeatherTableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            citiesWeatherTableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            citiesWeatherTableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            citiesWeatherCollectionView.topAnchor.constraint(equalTo: view.topAnchor),
+            citiesWeatherCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            citiesWeatherCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            citiesWeatherCollectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             
             loadingView.topAnchor.constraint(equalTo: view.topAnchor),
             loadingView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
@@ -84,8 +85,8 @@ final class CitiesListViewController: UIViewController {
             WeatherTableViewHeaderView.self,
             forHeaderFooterViewReuseIdentifier: K.weatherHeaderID
         )
-        citiesWeatherTableView.refreshControl = UIRefreshControl()
-        citiesWeatherTableView.refreshControl?.addTarget(
+        citiesWeatherCollectionView.refreshControl = UIRefreshControl()
+        citiesWeatherCollectionView.refreshControl?.addTarget(
             self,
             action: #selector(pullToRefresh(_:)),
             for: .valueChanged
@@ -161,8 +162,8 @@ final class CitiesListViewController: UIViewController {
     @objc private func pullToRefresh(_ sender: Any) {
         getUserLocation()
         getSimpleWeatherInformation { [weak self] in
-            self?.citiesWeatherTableView.refreshControl?.endRefreshing()
-            self?.citiesWeatherTableView.reloadData()
+            self?.citiesWeatherCollectionView.refreshControl?.endRefreshing()
+            self?.citiesWeatherCollectionView.reloadData()
         }
     }
 
@@ -175,7 +176,7 @@ final class CitiesListViewController: UIViewController {
                 case .success(let cityName):
                     self?.myLocationWeather?.cityName = cityName
                     DispatchQueue.main.async {
-                        self?.citiesWeatherTableView.reloadData()
+                        self?.citiesWeatherCollectionView.reloadData()
                     }
                 case .failure(let error):
                     self?.presentNetworkError(with: error)
