@@ -33,6 +33,17 @@ final class WeatherCollectionViewCell: UICollectionViewCell {
         return label
     }()
 
+    // MARK: - Initializer
+
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        
+        setLayout()
+    }
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
     // MARK: - setLayout
 
     private func setLayout() {
