@@ -8,27 +8,30 @@
 import UIKit
 
 final class CacheManager {
-    static let shared = NSCache<NSString, UIImage>()
+    private static let imageCache = NSCache<NSString, UIImage>()
     private init() {
         
     }
 
-    static func getWeatherIcon(iconName: String, completion: @escaping (UIImage?) -> Void) {
+    static func getWeatherIcon(iconName: String, completion: @escaping (UIImage) -> Void) {
         let cacheKey = NSString(string: iconName)
         
-        if let cachedImage = Self.shared.object(forKey: cacheKey) {
+        if let cachedImage = imageCache.object(forKey: cacheKey) {
             completion(cachedImage)
             return
         }
         NetworkManager.shared.fetchWeatherIcon(iconName: iconName) { result in
             switch result {
                 case .failure(_):
-                    completion(UIImage(systemName: "exclamationmark.triangle"))
+                    guard let failImage = UIImage(systemName: "exclamationmark.triangle") else {
+                        return
+                    }
+                    completion(failImage)
                 case .success(let data):
                     guard let iconImage = UIImage(data: data) else {
                         return
                     }
-                    Self.shared.setObject(iconImage, forKey: cacheKey)
+                    imageCache.setObject(iconImage, forKey: cacheKey)
                     completion(iconImage)
             }
         }
