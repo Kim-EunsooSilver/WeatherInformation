@@ -200,11 +200,9 @@ extension CitiesListViewController: UITableViewDataSource {
               let detailWeather = myLocationWeather else {
             return nil
         }
-        header.setProperties(detailWeather: myLocationWeather)
-        CacheManager.getWeatherIcon(iconName: detailWeather.iconName) { iconImage in
-            DispatchQueue.main.async {
-                header.weatherIcon.image = iconImage
-            }
+        
+        CacheManager.getWeatherIcon(iconName: detailWeather.iconName) { [weak self] iconImage in
+            header.setProperties(detailWeather: self?.myLocationWeather, weatherIcon: iconImage)
         }
         return header
     }
@@ -218,11 +216,8 @@ extension CitiesListViewController: UITableViewDataSource {
             return UITableViewCell()
         }
         let simpleWeather = simpleWeathers[indexPath.row]
-        cell.setProperties(simpleWeather: simpleWeather)
         CacheManager.getWeatherIcon(iconName: simpleWeather.iconName) { iconImage in
-            DispatchQueue.main.async {
-                cell.weatherIcon.image = iconImage
-            }
+            cell.setProperties(simpleWeather: simpleWeather, weatherIcon: iconImage)
         }
         cell.selectionStyle = .none
         return cell
