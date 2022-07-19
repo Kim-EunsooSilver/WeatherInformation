@@ -78,4 +78,16 @@ final class WeatherCollectionViewCell: UICollectionViewCell {
         self.contentView.layer.borderColor = UIColor.black.cgColor
         self.contentView.layer.masksToBounds = true
     }
+
+    // MARK: - Methods
+
+    func setProperties(simpleWeather: SimpleWeather?) {
+        guard let _simpleWeather = simpleWeather else {
+            return
+        }
+        
+        cityTitleLabel.text = _simpleWeather.cityName.localized
+        temperatureLabel.text = "Temperature: ".localized + String(_simpleWeather.currentTemperature) + "˚C"
+        humidityLabel.text = "Humidity: ".localized + String(_simpleWeather.currentHumidity) + "%"
+    }
 }
