@@ -21,7 +21,7 @@ final class WeatherTableViewHeaderView: UITableViewHeaderFooterView {
         label.adjustsFontSizeToFitWidth = true
         return label
     }()
-    let weatherIcon: UIImageView = {
+    private let weatherIcon: UIImageView = {
         let imageView = UIImageView()
         return imageView
     }()
@@ -157,18 +157,21 @@ final class WeatherTableViewHeaderView: UITableViewHeaderFooterView {
 
     // MARK: - Methods
 
-    func setProperties(detailWeather: DetailWeather?) {
-        guard let _detailWeather = detailWeather else {
-            return
+    func setProperties(detailWeather: DetailWeather?, weatherIcon: UIImage) {
+        DispatchQueue.main.async { [weak self] in
+            guard let _detailWeather = detailWeather else {
+                return
+            }
+            self?.myLocationLabel.text = "My Location".localized + "(" + _detailWeather.cityName + ")"
+            self?.descriptionLabel.text = _detailWeather.description
+            self?.weatherIcon.image = weatherIcon
+            self?.temperatureLabel.text = "current temperature: ".localized + "\(_detailWeather.currentTemperature)˚C"
+            self?.feelingTemperatureLabel.text = "feeling temperature: ".localized + "\(_detailWeather.feelingTemperature)˚C"
+            self?.currentHumidityLabel.text = "current humidity: ".localized + "\(_detailWeather.currentHumidity)%"
+            self?.minimumTemperatureLabel.text = "minimum Temperature: ".localized + "\(_detailWeather.minimumTemperature)˚C"
+            self?.maximumTemperatureLabel.text = "maximum Temperature: ".localized + "\(_detailWeather.maximumTemperature)˚C"
+            self?.windSpeedLabel.text = "wind speed: ".localized + "\(_detailWeather.windSpeed)m/s"
+            self?.updatedTimeLabel.text = "updated time: ".localized + _detailWeather.timeOfData
         }
-        myLocationLabel.text = "My Location".localized + "(" + _detailWeather.cityName + ")"
-        descriptionLabel.text = _detailWeather.description
-        temperatureLabel.text = "current temperature: ".localized + "\(_detailWeather.currentTemperature)˚C"
-        feelingTemperatureLabel.text = "feeling temperature: ".localized + "\(_detailWeather.feelingTemperature)˚C"
-        currentHumidityLabel.text = "current humidity: ".localized + "\(_detailWeather.currentHumidity)%"
-        minimumTemperatureLabel.text = "minimum Temperature: ".localized + "\(_detailWeather.minimumTemperature)˚C"
-        maximumTemperatureLabel.text = "maximum Temperature: ".localized + "\(_detailWeather.maximumTemperature)˚C"
-        windSpeedLabel.text = "wind speed: ".localized + "\(_detailWeather.windSpeed)m/s"
-        updatedTimeLabel.text = "updated time: ".localized + _detailWeather.timeOfData
     }
 }

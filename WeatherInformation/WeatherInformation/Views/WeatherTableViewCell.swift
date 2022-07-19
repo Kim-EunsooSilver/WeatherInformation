@@ -11,7 +11,7 @@ final class WeatherTableViewCell: UITableViewCell {
 
     // MARK: - UI Properties
 
-    let weatherIcon: UIImageView = {
+    private let weatherIcon: UIImageView = {
         let imageView = UIImageView()
         return imageView
     }()
@@ -68,13 +68,16 @@ final class WeatherTableViewCell: UITableViewCell {
         super.prepareForReuse()
         weatherIcon.image = nil
     }
-    func setProperties(simpleWeather: SimpleWeather?) {
-        cityTitleLabel.text = simpleWeather?.cityName.localized
-        guard let _simpleWeather = simpleWeather else {
-            return
+    func setProperties(simpleWeather: SimpleWeather?, weatherIcon: UIImage) {
+        DispatchQueue.main.async { [weak self] in
+            guard let _simpleWeather = simpleWeather else {
+                return
+            }
+            self?.weatherIcon.image = weatherIcon
+            self?.cityTitleLabel.text = _simpleWeather.cityName.localized
+            self?.temperatureLabel.text = "Temperature: ".localized + String(_simpleWeather.currentTemperature) + "˚C"
+            self?.humidityLabel.text = "Humidity: ".localized + String(_simpleWeather.currentHumidity) + "%"
         }
-        temperatureLabel.text = "Temperature: ".localized + String(_simpleWeather.currentTemperature) + "˚C"
-        humidityLabel.text = "Humidity: ".localized + String(_simpleWeather.currentHumidity) + "%"
     }
 
     // MARK: - setLayout
