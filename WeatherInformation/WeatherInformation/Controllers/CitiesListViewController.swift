@@ -23,9 +23,10 @@ final class CitiesListViewController: UIViewController {
         let loadingView = LoadingView()
         return loadingView
     }()
-    private let citiesWeatherTableView: UITableView = {
-        let tableView = UITableView(frame: .zero, style: .grouped)
-        return tableView
+    private let citiesWeatherCollectionView: UICollectionView = {
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
+        
+        return collectionView
     }()
 
     // MARK: - viewLifeCycle
@@ -34,14 +35,14 @@ final class CitiesListViewController: UIViewController {
         super.viewDidLoad()
 
         setLayout()
-        setTableView()
+        setCollectionView()
         setLocationManager()
         
         self.loadingView.isLoading = true
         
         getSimpleWeatherInformation { [weak self] in
             self?.loadingView.isLoading = false
-            self?.citiesWeatherTableView.reloadData()
+            self?.citiesWeatherCollectionView.reloadData()
         }
         getUserLocation()
     }
@@ -52,17 +53,17 @@ final class CitiesListViewController: UIViewController {
     // MARK: - setLayout
 
     private func setLayout() {
-        view.addSubview(citiesWeatherTableView)
+        view.addSubview(citiesWeatherCollectionView)
         view.addSubview(loadingView)
         
-        citiesWeatherTableView.translatesAutoresizingMaskIntoConstraints = false
+        citiesWeatherCollectionView.translatesAutoresizingMaskIntoConstraints = false
         loadingView.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
-            citiesWeatherTableView.topAnchor.constraint(equalTo: view.topAnchor),
-            citiesWeatherTableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            citiesWeatherTableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            citiesWeatherTableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            citiesWeatherCollectionView.topAnchor.constraint(equalTo: view.topAnchor),
+            citiesWeatherCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            citiesWeatherCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            citiesWeatherCollectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             
             loadingView.topAnchor.constraint(equalTo: view.topAnchor),
             loadingView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
@@ -71,21 +72,22 @@ final class CitiesListViewController: UIViewController {
         ])
     }
 
-    // MARK: - setTableView
+    // MARK: - setCollectionView
 
-    private func setTableView() {
-        citiesWeatherTableView.dataSource = self
-        citiesWeatherTableView.delegate = self
-        citiesWeatherTableView.register(
-            WeatherTableViewCell.self,
-            forCellReuseIdentifier: K.weatherCellID
+    private func setCollectionView() {
+        citiesWeatherCollectionView.dataSource = self
+        citiesWeatherCollectionView.delegate = self
+        citiesWeatherCollectionView.register(
+            WeatherCollectionViewCell.self,
+            forCellWithReuseIdentifier: K.weatherCellID
         )
-        citiesWeatherTableView.register(
-            WeatherTableViewHeaderView.self,
-            forHeaderFooterViewReuseIdentifier: K.weatherHeaderID
+        citiesWeatherCollectionView.register(
+            WeatherCollectionReusableView.self,
+            forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
+            withReuseIdentifier: K.weatherHeaderID
         )
-        citiesWeatherTableView.refreshControl = UIRefreshControl()
-        citiesWeatherTableView.refreshControl?.addTarget(
+        citiesWeatherCollectionView.refreshControl = UIRefreshControl()
+        citiesWeatherCollectionView.refreshControl?.addTarget(
             self,
             action: #selector(pullToRefresh(_:)),
             for: .valueChanged
@@ -161,8 +163,8 @@ final class CitiesListViewController: UIViewController {
     @objc private func pullToRefresh(_ sender: Any) {
         getUserLocation()
         getSimpleWeatherInformation { [weak self] in
-            self?.citiesWeatherTableView.refreshControl?.endRefreshing()
-            self?.citiesWeatherTableView.reloadData()
+            self?.citiesWeatherCollectionView.refreshControl?.endRefreshing()
+            self?.citiesWeatherCollectionView.reloadData()
         }
     }
 
@@ -175,7 +177,7 @@ final class CitiesListViewController: UIViewController {
                 case .success(let cityName):
                     self?.myLocationWeather?.cityName = cityName
                     DispatchQueue.main.async {
-                        self?.citiesWeatherTableView.reloadData()
+                        self?.citiesWeatherCollectionView.reloadData()
                     }
                 case .failure(let error):
                     self?.presentNetworkError(with: error)
@@ -184,38 +186,37 @@ final class CitiesListViewController: UIViewController {
     }
 }
 
-// MARK: - UITableViewDataSource
+// MARK: - UICollectionViewDataSource
 
-extension CitiesListViewController: UITableViewDataSource {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+extension CitiesListViewController: UICollectionViewDataSource {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return simpleWeathers.count
     }
-    
-    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        if locationManager.authorizationStatus == .denied {
-            return nil
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        switch kind {
+            case UICollectionView.elementKindSectionHeader:
+                let dequeuedHeader = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: K.weatherHeaderID, for: indexPath)
+                guard let header = dequeuedHeader as? WeatherCollectionReusableView else {
+                    return dequeuedHeader
+                }
+                header.setProperties(detailWeather: myLocationWeather)
+                CacheManager.getWeatherIcon(iconName: myLocationWeather?.iconName ?? "") { iconImage in
+                    DispatchQueue.main.async {
+                        header.weatherIcon.image = iconImage
+                    }
+                }
+                return header
+            default:
+                assert(false)
         }
-        let dequeuedHeader = tableView.dequeueReusableHeaderFooterView(withIdentifier: K.weatherHeaderID)
-        guard let header = dequeuedHeader as? WeatherTableViewHeaderView,
-              let detailWeather = myLocationWeather else {
-            return nil
-        }
-        header.setProperties(detailWeather: myLocationWeather)
-        CacheManager.getWeatherIcon(iconName: detailWeather.iconName) { iconImage in
-            DispatchQueue.main.async {
-                header.weatherIcon.image = iconImage
-            }
-        }
-        return header
     }
-
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let dequeuedCell = tableView.dequeueReusableCell(
-            withIdentifier: K.weatherCellID,
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let dequeuedCell = collectionView.dequeueReusableCell(
+            withReuseIdentifier: K.weatherCellID,
             for: indexPath
         )
-        guard let cell = dequeuedCell as? WeatherTableViewCell else {
-            return UITableViewCell()
+        guard let cell = dequeuedCell as? WeatherCollectionViewCell else {
+            return UICollectionViewCell()
         }
         let simpleWeather = simpleWeathers[indexPath.row]
         cell.setProperties(simpleWeather: simpleWeather)
@@ -224,30 +225,33 @@ extension CitiesListViewController: UITableViewDataSource {
                 cell.weatherIcon.image = iconImage
             }
         }
-        cell.selectionStyle = .none
         return cell
     }
 }
 
-// MARK: - UITableViewDelegate
+// MARK: - UICollectionViewDelegate
 
-extension CitiesListViewController: UITableViewDelegate {
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 120
-    }
-
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        if locationManager.authorizationStatus == .denied {
-            return 0
-        } else {
-            return 200
-        }
-    }
-
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+extension CitiesListViewController: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let nextVC = WeatherDetailViewController()
         nextVC.cityName = simpleWeathers[indexPath.row].cityName
         self.navigationController?.pushViewController(nextVC, animated: true)
+    }
+}
+
+// MARK: - UICollectionViewDelegateFlowLayout
+
+extension CitiesListViewController: UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return CGSize(width: 150, height: 200)
+    }
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        return UIEdgeInsets(top: 20, left: 20, bottom: 20, right: 20)
+    }
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
+        let width = collectionView.frame.width
+        let height: CGFloat = 200
+        return CGSize(width: width, height: height)
     }
 }
 

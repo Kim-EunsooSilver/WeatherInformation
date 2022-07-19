@@ -1,14 +1,14 @@
 //
-//  WeatherTableViewHeaderView.swift
+//  WeatherCollectionReusableView.swift
 //  WeatherInformation
 //
-//  Created by Eunsoo KIM on 2022/07/08.
+//  Created by Eunsoo KIM on 2022/07/19.
 //
 
 import UIKit
 
-final class WeatherTableViewHeaderView: UITableViewHeaderFooterView {
-
+final class WeatherCollectionReusableView: UICollectionReusableView {
+    
     // MARK: - UI Properties
 
     private let myLocationLabel: UILabel = {
@@ -102,24 +102,25 @@ final class WeatherTableViewHeaderView: UITableViewHeaderFooterView {
 
     // MARK: - Initializer
 
-    override init(reuseIdentifier: String?) {
-        super.init(reuseIdentifier: reuseIdentifier)
+    override init(frame: CGRect) {
+        super.init(frame: frame)
         
         setLayout()
     }
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     // MARK: - setLayout
+    
     private func setLayout() {
-        contentView.backgroundColor = .systemGroupedBackground
         
-        contentView.addSubview(myLocationLabel)
-        contentView.addSubview(iconAndDescriptionStackView)
-        contentView.addSubview(informationStackView)
-        contentView.addSubview(updatedTimeLabel)
+        self.addSubview(myLocationLabel)
+        self.addSubview(iconAndDescriptionStackView)
+        self.addSubview(informationStackView)
+        self.addSubview(updatedTimeLabel)
         
+        self.translatesAutoresizingMaskIntoConstraints = false
         myLocationLabel.translatesAutoresizingMaskIntoConstraints = false
         descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
         weatherIcon.translatesAutoresizingMaskIntoConstraints = false
@@ -134,24 +135,24 @@ final class WeatherTableViewHeaderView: UITableViewHeaderFooterView {
         informationStackView.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
-            myLocationLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10),
-            myLocationLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
-            myLocationLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: 10),
+            myLocationLabel.topAnchor.constraint(equalTo: self.topAnchor, constant: 10),
+            myLocationLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 10),
+            myLocationLabel.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: 10),
             
             weatherIcon.widthAnchor.constraint(equalToConstant: 100),
             weatherIcon.heightAnchor.constraint(equalToConstant: 100),
             
             iconAndDescriptionStackView.topAnchor.constraint(equalTo: myLocationLabel.bottomAnchor, constant: 10),
-            iconAndDescriptionStackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
-            iconAndDescriptionStackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10),
+            iconAndDescriptionStackView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 10),
+            iconAndDescriptionStackView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -10),
             
             informationStackView.topAnchor.constraint(equalTo: myLocationLabel.bottomAnchor, constant: 10),
             informationStackView.leadingAnchor.constraint(equalTo: iconAndDescriptionStackView.trailingAnchor, constant: 5),
-            informationStackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10),
+            informationStackView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -10),
             
             updatedTimeLabel.topAnchor.constraint(equalTo: informationStackView.bottomAnchor, constant: 5),
-            updatedTimeLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10),
-            updatedTimeLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10)
+            updatedTimeLabel.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -10),
+            updatedTimeLabel.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -10)
         ])
     }
 
