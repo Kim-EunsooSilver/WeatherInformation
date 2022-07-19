@@ -99,4 +99,48 @@ final class WeatherCollectionReusableView: UICollectionReusableView {
         informationStackView.distribution = .fillEqually
         return informationStackView
     }()
+    // MARK: - setLayout
+    
+    private func setLayout() {
+        
+        self.addSubview(myLocationLabel)
+        self.addSubview(iconAndDescriptionStackView)
+        self.addSubview(informationStackView)
+        self.addSubview(updatedTimeLabel)
+        
+        self.translatesAutoresizingMaskIntoConstraints = false
+        myLocationLabel.translatesAutoresizingMaskIntoConstraints = false
+        descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
+        weatherIcon.translatesAutoresizingMaskIntoConstraints = false
+        temperatureLabel.translatesAutoresizingMaskIntoConstraints = false
+        feelingTemperatureLabel.translatesAutoresizingMaskIntoConstraints = false
+        minimumTemperatureLabel.translatesAutoresizingMaskIntoConstraints = false
+        maximumTemperatureLabel.translatesAutoresizingMaskIntoConstraints = false
+        currentHumidityLabel.translatesAutoresizingMaskIntoConstraints = false
+        windSpeedLabel.translatesAutoresizingMaskIntoConstraints = false
+        updatedTimeLabel.translatesAutoresizingMaskIntoConstraints = false
+        iconAndDescriptionStackView.translatesAutoresizingMaskIntoConstraints = false
+        informationStackView.translatesAutoresizingMaskIntoConstraints = false
+        
+        NSLayoutConstraint.activate([
+            myLocationLabel.topAnchor.constraint(equalTo: self.topAnchor, constant: 10),
+            myLocationLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 10),
+            myLocationLabel.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: 10),
+            
+            weatherIcon.widthAnchor.constraint(equalToConstant: 100),
+            weatherIcon.heightAnchor.constraint(equalToConstant: 100),
+            
+            iconAndDescriptionStackView.topAnchor.constraint(equalTo: myLocationLabel.bottomAnchor, constant: 10),
+            iconAndDescriptionStackView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 10),
+            iconAndDescriptionStackView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -10),
+            
+            informationStackView.topAnchor.constraint(equalTo: myLocationLabel.bottomAnchor, constant: 10),
+            informationStackView.leadingAnchor.constraint(equalTo: iconAndDescriptionStackView.trailingAnchor, constant: 5),
+            informationStackView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -10),
+            
+            updatedTimeLabel.topAnchor.constraint(equalTo: informationStackView.bottomAnchor, constant: 5),
+            updatedTimeLabel.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -10),
+            updatedTimeLabel.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -10)
+        ])
+    }
 }
