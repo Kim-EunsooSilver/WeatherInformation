@@ -186,38 +186,37 @@ final class CitiesListViewController: UIViewController {
     }
 }
 
-// MARK: - UITableViewDataSource
+// MARK: - UICollectionViewDataSource
 
-extension CitiesListViewController: UITableViewDataSource {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+extension CitiesListViewController: UICollectionViewDataSource {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return simpleWeathers.count
     }
-    
-    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        if locationManager.authorizationStatus == .denied {
-            return nil
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        switch kind {
+            case UICollectionView.elementKindSectionHeader:
+                let dequeuedHeader = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: K.weatherHeaderID, for: indexPath)
+                guard let header = dequeuedHeader as? WeatherCollectionReusableView else {
+                    return dequeuedHeader
+                }
+                header.setProperties(detailWeather: myLocationWeather)
+                CacheManager.getWeatherIcon(iconName: myLocationWeather?.iconName ?? "") { iconImage in
+                    DispatchQueue.main.async {
+                        header.weatherIcon.image = iconImage
+                    }
+                }
+                return header
+            default:
+                assert(false)
         }
-        let dequeuedHeader = tableView.dequeueReusableHeaderFooterView(withIdentifier: K.weatherHeaderID)
-        guard let header = dequeuedHeader as? WeatherTableViewHeaderView,
-              let detailWeather = myLocationWeather else {
-            return nil
-        }
-        header.setProperties(detailWeather: myLocationWeather)
-        CacheManager.getWeatherIcon(iconName: detailWeather.iconName) { iconImage in
-            DispatchQueue.main.async {
-                header.weatherIcon.image = iconImage
-            }
-        }
-        return header
     }
-
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let dequeuedCell = tableView.dequeueReusableCell(
-            withIdentifier: K.weatherCellID,
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let dequeuedCell = collectionView.dequeueReusableCell(
+            withReuseIdentifier: K.weatherCellID,
             for: indexPath
         )
-        guard let cell = dequeuedCell as? WeatherTableViewCell else {
-            return UITableViewCell()
+        guard let cell = dequeuedCell as? WeatherCollectionViewCell else {
+            return UICollectionViewCell()
         }
         let simpleWeather = simpleWeathers[indexPath.row]
         cell.setProperties(simpleWeather: simpleWeather)
@@ -226,7 +225,6 @@ extension CitiesListViewController: UITableViewDataSource {
                 cell.weatherIcon.image = iconImage
             }
         }
-        cell.selectionStyle = .none
         return cell
     }
 }
