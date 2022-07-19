@@ -113,7 +113,7 @@ final class WeatherTableViewHeaderView: UITableViewHeaderFooterView {
     
     // MARK: - setLayout
     private func setLayout() {
-        contentView.backgroundColor = .systemGroupedBackground
+        contentView.backgroundColor = .systemBackground
         
         contentView.addSubview(myLocationLabel)
         contentView.addSubview(iconAndDescriptionStackView)

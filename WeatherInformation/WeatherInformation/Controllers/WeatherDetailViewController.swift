@@ -107,7 +107,7 @@ final class WeatherDetailViewController: UIViewController {
     // MARK: - setLayout
 
     private func setLayout() {
-        view.backgroundColor = .systemGroupedBackground
+        view.backgroundColor = .systemBackground
         
         loadingView.translatesAutoresizingMaskIntoConstraints = false
         cityNameLabel.translatesAutoresizingMaskIntoConstraints = false
