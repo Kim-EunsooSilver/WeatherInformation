@@ -35,7 +35,7 @@ final class CitiesListViewController: UIViewController {
         super.viewDidLoad()
 
         setLayout()
-        setTableView()
+        setCollectionView()
         setLocationManager()
         
         self.loadingView.isLoading = true
@@ -72,18 +72,19 @@ final class CitiesListViewController: UIViewController {
         ])
     }
 
-    // MARK: - setTableView
+    // MARK: - setCollectionView
 
-    private func setTableView() {
-        citiesWeatherTableView.dataSource = self
-        citiesWeatherTableView.delegate = self
-        citiesWeatherTableView.register(
-            WeatherTableViewCell.self,
-            forCellReuseIdentifier: K.weatherCellID
+    private func setCollectionView() {
+        citiesWeatherCollectionView.dataSource = self
+        citiesWeatherCollectionView.delegate = self
+        citiesWeatherCollectionView.register(
+            WeatherCollectionViewCell.self,
+            forCellWithReuseIdentifier: K.weatherCellID
         )
-        citiesWeatherTableView.register(
-            WeatherTableViewHeaderView.self,
-            forHeaderFooterViewReuseIdentifier: K.weatherHeaderID
+        citiesWeatherCollectionView.register(
+            WeatherCollectionReusableView.self,
+            forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
+            withReuseIdentifier: K.weatherHeaderID
         )
         citiesWeatherCollectionView.refreshControl = UIRefreshControl()
         citiesWeatherCollectionView.refreshControl?.addTarget(
