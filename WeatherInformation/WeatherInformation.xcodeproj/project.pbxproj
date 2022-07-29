@@ -65,6 +65,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		890AD9622893A76C002AEF34 /* Entities */ = {
+			isa = PBXGroup;
+			children = (
+				896A9CF42869A51D00A49C1E /* WeatherData.swift */,
+				89E3DA7A287EAD9C00A839B4 /* TranslationData.swift */,
+				89D861812884FA1B002B14A2 /* WeatherVO.swift */,
+			);
+			path = Entities;
+			sourceTree = "<group>";
+		};
 		8918F2192872D4F500E4CF89 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
@@ -98,9 +108,7 @@
 		896A9CF228698D8700A49C1E /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				896A9CF42869A51D00A49C1E /* WeatherData.swift */,
-				89E3DA7A287EAD9C00A839B4 /* TranslationData.swift */,
-				89D861812884FA1B002B14A2 /* WeatherVO.swift */,
+				890AD9622893A76C002AEF34 /* Entities */,
 			);
 			path = Models;
 			sourceTree = "<group>";
