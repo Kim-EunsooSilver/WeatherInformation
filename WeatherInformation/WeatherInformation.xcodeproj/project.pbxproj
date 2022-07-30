@@ -97,22 +97,43 @@
 		89155776289567390020FBEF /* Scenes */ = {
 			isa = PBXGroup;
 			children = (
+				898D9371286ED6D5006979D4 /* LoadingView.swift */,
+				8915577728956BEB0020FBEF /* CitiesWeatherList */,
+				8915577828956BF10020FBEF /* DetailWeather */,
 			);
 			path = Scenes;
 			sourceTree = "<group>";
 		};
-		8918F2192872D4F500E4CF89 /* Controllers */ = {
+		8915577728956BEB0020FBEF /* CitiesWeatherList */ = {
 			isa = PBXGroup;
 			children = (
 				89924DE328658BB4006EA2EE /* CitiesWeatherListViewController.swift */,
+				8915577928956D2F0020FBEF /* Subcomponets */,
+			);
+			path = CitiesWeatherList;
+			sourceTree = "<group>";
+		};
+		8915577828956BF10020FBEF /* DetailWeather */ = {
+			isa = PBXGroup;
+			children = (
 				8918F2202873FC1200E4CF89 /* WeatherDetailViewController.swift */,
 			);
-			path = Controllers;
+			path = DetailWeather;
+			sourceTree = "<group>";
+		};
+		8915577928956D2F0020FBEF /* Subcomponets */ = {
+			isa = PBXGroup;
+			children = (
+				89924DF3286591AE006EA2EE /* WeatherTableViewCell.swift */,
+				899E38492877FE7B00457639 /* WeatherTableViewHeaderView.swift */,
+			);
+			path = Subcomponets;
 			sourceTree = "<group>";
 		};
 		8918F21A2872D4FE00E4CF89 /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
+				8918F21D2872D5CE00E4CF89 /* Extensions */,
 				899E38472877E8D700457639 /* LanguageCode.swift */,
 				89924DF52865961A006EA2EE /* Constants.swift */,
 				8918F21B2872D56C00E4CF89 /* CacheManager.swift */,
@@ -127,24 +148,8 @@
 				892F4696287540EA007C7090 /* UIViewController+.swift */,
 				89CE58F32877D21900E2ED02 /* String+.swift */,
 			);
-			path = Extensions;
-			sourceTree = "<group>";
-		};
-		896A9CF228698D8700A49C1E /* Models */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Models;
-			sourceTree = "<group>";
-		};
-		896A9CF328698D9D00A49C1E /* Views */ = {
-			isa = PBXGroup;
-			children = (
-				89924DF3286591AE006EA2EE /* WeatherTableViewCell.swift */,
-				898D9371286ED6D5006979D4 /* LoadingView.swift */,
-				899E38492877FE7B00457639 /* WeatherTableViewHeaderView.swift */,
-			);
-			path = Views;
+			name = Extensions;
+			path = ../Extensions;
 			sourceTree = "<group>";
 		};
 		89924DD328658BB4006EA2EE = {
@@ -171,11 +176,7 @@
 				89155776289567390020FBEF /* Scenes */,
 				890AD9622893A76C002AEF34 /* Entities */,
 				8908284A28951762000F5512 /* Network */,
-				896A9CF228698D8700A49C1E /* Models */,
-				896A9CF328698D9D00A49C1E /* Views */,
-				8918F2192872D4F500E4CF89 /* Controllers */,
 				8918F21A2872D4FE00E4CF89 /* Helpers */,
-				8918F21D2872D5CE00E4CF89 /* Extensions */,
 				89924DE828658BB5006EA2EE /* Assets.xcassets */,
 				89924DEA28658BB5006EA2EE /* LaunchScreen.storyboard */,
 				89924DED28658BB5006EA2EE /* Info.plist */,
