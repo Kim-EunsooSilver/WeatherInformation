@@ -12,9 +12,7 @@ final class CitiesWeatherListViewController: UIViewController {
 
     // MARK: - Properties
 
-    private var simpleWeathers: [SimpleWeather] = []
-    private let networkManager = NetworkManager.shared
-    private var myLocationWeather: DetailWeather?
+    private let citiesWeatherListModel = CitiesWeatherListModel()
     private let locationManager = CLLocationManager()
 
     // MARK: - UI Properties
@@ -36,14 +34,10 @@ final class CitiesWeatherListViewController: UIViewController {
         setLayout()
         setTableView()
         setLocationManager()
-        
+        getUserLocation()
         self.loadingView.isLoading = true
         
-        getSimpleWeatherInformation { [weak self] in
-            self?.loadingView.isLoading = false
-            self?.citiesWeatherTableView.reloadData()
-        }
-        getUserLocation()
+        getSimpleWeatherInformation()
     }
     override func viewWillAppear(_ animated: Bool) {
         navigationController?.isNavigationBarHidden = true
@@ -101,50 +95,24 @@ final class CitiesWeatherListViewController: UIViewController {
 
     // MARK: - Methods
 
-    private func getSimpleWeatherInformation(completion: @escaping () -> Void) {
-        let group = DispatchGroup()
-        let semaphore = DispatchSemaphore(value: 1)
-        var networkError: NetworkManagerError?
-        var fetchedSimpleWeathers: [SimpleWeather] = []
-        K.cities.forEach { cityName in
-            group.enter()
-            networkManager.fetchWeather(.simpleWeather, cityName: cityName) { result in
-                switch result {
-                    case .success(let simpleWeather):
-                        semaphore.wait()
-                        guard let _simpleWeather = simpleWeather as? SimpleWeather else {
-                            semaphore.signal()
-                            group.leave()
-                            return
-                        }
-                        fetchedSimpleWeathers.append(_simpleWeather)
-                        semaphore.signal()
-                        group.leave()
-                    case .failure(let error):
-                        networkError = error
-                        group.leave()
-                        return
-                }
+    private func getSimpleWeatherInformation() {
+        citiesWeatherListModel.getSimpleWeatherInformation { [weak self] result in
+            switch result {
+                case .success():
+                    DispatchQueue.main.async {
+                        self?.loadingView.isLoading = false
+                        self?.citiesWeatherTableView.reloadData()
+                    }
+                case .failure(let error):
+                    self?.presentNetworkError(with: error)
             }
-        }
-        group.notify(queue: .main) { [weak self] in
-            if networkError != nil {
-                self?.presentNetworkError(with: networkError)
-            }
-            self?.simpleWeathers = fetchedSimpleWeathers.sorted(
-                by: { $0.cityName.localized < $1.cityName.localized }
-            )
-            completion()
         }
     }
-
-    private func getMyLocationWeather(location: CLLocation) {
-        let latitude = String(location.coordinate.latitude)
-        let longitude = String(location.coordinate.longitude)
-        networkManager.fetchWeather(latitude: latitude, longitude: longitude) { [weak self] result in
+    
+    private func getMyLocationWeather() {
+        citiesWeatherListModel.getMyLocationWeather { [weak self] result in
             switch result {
-                case .success(let detailWeather):
-                    self?.myLocationWeather = detailWeather
+                case .success():
                     self?.translateCityName()
                 case .failure(let error):
                     self?.presentNetworkError(with: error)
@@ -155,25 +123,27 @@ final class CitiesWeatherListViewController: UIViewController {
     private func getUserLocation() {
         locationManager.requestWhenInUseAuthorization()
         locationManager.requestLocation()
-        
     }
 
     @objc private func pullToRefresh(_ sender: Any) {
         getUserLocation()
-        getSimpleWeatherInformation { [weak self] in
-            self?.citiesWeatherTableView.refreshControl?.endRefreshing()
-            self?.citiesWeatherTableView.reloadData()
+        citiesWeatherListModel.getSimpleWeatherInformation { [weak self] result in
+            switch result {
+                case .success(_):
+                    DispatchQueue.main.async {
+                        self?.citiesWeatherTableView.refreshControl?.endRefreshing()
+                        self?.citiesWeatherTableView.reloadData()
+                    }
+                case .failure(let error):
+                    self?.presentNetworkError(with: error)
+            }
         }
     }
 
     private func translateCityName() {
-        guard let translatingCityName = myLocationWeather?.cityName else {
-            return
-        }
-        networkManager.fetchTranslatedText(translatingCityName) { [weak self] result in
+        citiesWeatherListModel.translateCityName { [weak self] result in
             switch result {
-                case .success(let cityName):
-                    self?.myLocationWeather?.cityName = cityName
+                case .success():
                     DispatchQueue.main.async {
                         self?.citiesWeatherTableView.reloadData()
                     }
@@ -188,7 +158,7 @@ final class CitiesWeatherListViewController: UIViewController {
 
 extension CitiesWeatherListViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return simpleWeathers.count
+        return citiesWeatherListModel.simpleWeathers.count
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
@@ -197,12 +167,12 @@ extension CitiesWeatherListViewController: UITableViewDataSource {
         }
         let dequeuedHeader = tableView.dequeueReusableHeaderFooterView(withIdentifier: K.weatherHeaderID)
         guard let header = dequeuedHeader as? WeatherTableViewHeaderView,
-              let detailWeather = myLocationWeather else {
+              let detailWeather = citiesWeatherListModel.myLocationWeather else {
             return nil
         }
         
         CacheManager.getWeatherIcon(iconName: detailWeather.iconName) { [weak self] iconImage in
-            header.setProperties(detailWeather: self?.myLocationWeather, weatherIcon: iconImage)
+            header.setProperties(detailWeather: detailWeather, weatherIcon: iconImage)
         }
         return header
     }
@@ -215,7 +185,7 @@ extension CitiesWeatherListViewController: UITableViewDataSource {
         guard let cell = dequeuedCell as? WeatherTableViewCell else {
             return UITableViewCell()
         }
-        let simpleWeather = simpleWeathers[indexPath.row]
+        let simpleWeather = citiesWeatherListModel.simpleWeathers[indexPath.row]
         CacheManager.getWeatherIcon(iconName: simpleWeather.iconName) { iconImage in
             cell.setProperties(simpleWeather: simpleWeather, weatherIcon: iconImage)
         }
@@ -241,7 +211,7 @@ extension CitiesWeatherListViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let nextVC = WeatherDetailViewController()
-        nextVC.cityName = simpleWeathers[indexPath.row].cityName
+        nextVC.cityName = citiesWeatherListModel.simpleWeathers[indexPath.row].cityName
         self.navigationController?.pushViewController(nextVC, animated: true)
     }
 }
@@ -251,7 +221,8 @@ extension CitiesWeatherListViewController: UITableViewDelegate {
 extension CitiesWeatherListViewController: CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         if let location = locations.last {
-            getMyLocationWeather(location: location)
+            citiesWeatherListModel.setMyLocationInformation(currentLocation: location)
+            getMyLocationWeather()
         }
     }
 
