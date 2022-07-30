@@ -14,6 +14,8 @@ extension UIViewController {
             return
         }
         switch _error {
+            case .urlError:
+                errorMessage = "URL Error!"
             case .networkError:
                 errorMessage = "network Error!"
             case .responseError:
@@ -25,7 +27,9 @@ extension UIViewController {
         }
         let alert = UIAlertController(title: "warning", message: errorMessage, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default))
+        DispatchQueue.main.async {
+            self.present(alert, animated: true)
+        }
         
-        self.present(alert, animated: true)
     }
 }
