@@ -8,7 +8,7 @@
 import UIKit
 import CoreLocation
 
-final class CitiesListViewController: UIViewController {
+final class CitiesWeatherListViewController: UIViewController {
 
     // MARK: - Properties
 
@@ -186,7 +186,7 @@ final class CitiesListViewController: UIViewController {
 
 // MARK: - UITableViewDataSource
 
-extension CitiesListViewController: UITableViewDataSource {
+extension CitiesWeatherListViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return simpleWeathers.count
     }
@@ -226,7 +226,7 @@ extension CitiesListViewController: UITableViewDataSource {
 
 // MARK: - UITableViewDelegate
 
-extension CitiesListViewController: UITableViewDelegate {
+extension CitiesWeatherListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 120
     }
@@ -248,7 +248,7 @@ extension CitiesListViewController: UITableViewDelegate {
 
 // MARK: - CLLocationManagerDelegate
 
-extension CitiesListViewController: CLLocationManagerDelegate {
+extension CitiesWeatherListViewController: CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         if let location = locations.last {
             getMyLocationWeather(location: location)
