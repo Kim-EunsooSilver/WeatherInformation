@@ -8,7 +8,6 @@
 import Foundation
 
 final class NetworkManager {
-
     static let shared = NetworkManager()
 
     private init() { }
@@ -41,9 +40,11 @@ final class NetworkManager {
         }
         task.resume()
     }
+}
 
-    // MARK: - Fetch Methods
-    
+// MARK: - Fetch Methods
+
+extension NetworkManager {
     func fetchWeather(
         _ weatherInformation: WeatherInformation,
         cityName: String,
@@ -53,28 +54,15 @@ final class NetworkManager {
         performRequest(with: urlComponents) { [weak self] result in
             switch result {
                 case .success(let data):
-                    guard let weather = self?.parseToWeather(weatherInformation, fetchedWeather: data) else {
+                    guard let weather = self?.parseToWeather(
+                        weatherInformation,
+                        fetchedWeather: data
+                    ) else {
                         completion(.failure(.parseError))
                         return
                     }
                     completion(.success(weather))
                     break
-                case .failure(let error):
-                    completion(.failure(error))
-            }
-        }
-    }
-
-    func fetchWeatherIcon(
-        iconName: String,
-        completion: @escaping (Result<Data, NetworkManagerError>) -> Void
-    ) {
-        let urlComponents = getWeatherIconURLComponents(iconName: iconName)
-        performRequest(with: urlComponents) { result in
-            switch result {
-                case .success(let data):
-                    completion(.success(data))
-                    return
                 case .failure(let error):
                     completion(.failure(error))
             }
@@ -90,11 +78,28 @@ final class NetworkManager {
         performRequest(with: urlComponents) { [weak self] result in
             switch result {
                 case .success(let data):
-                    guard let detailWeather = self?.parseToDetailWeather(data) else {
+                    guard let weatherVO = self?.parseToWeather(.detailWeather, fetchedWeather: data),
+                        let detailWeather = weatherVO as? DetailWeather else {
                         completion(.failure(.parseError))
                         return
                     }
                     completion(.success(detailWeather))
+                case .failure(let error):
+                    completion(.failure(error))
+            }
+        }
+    }
+    
+    func fetchWeatherIcon(
+        iconName: String,
+        completion: @escaping (Result<Data, NetworkManagerError>) -> Void
+    ) {
+        let urlComponents = getWeatherIconURLComponents(iconName: iconName)
+        performRequest(with: urlComponents) { result in
+            switch result {
+                case .success(let data):
+                    completion(.success(data))
+                    return
                 case .failure(let error):
                     completion(.failure(error))
             }
@@ -131,85 +136,152 @@ final class NetworkManager {
             }
         }
     }
-
 }
 
-extension NetworkManager {
+// MARK: - Parse Methods
 
-    // MARK: - Parsing functions
+private extension NetworkManager {
+    func decode (_ data: Data) -> WeatherData? {
+        let decoder = JSONDecoder()
+        do {
+            let data = try decoder.decode(WeatherData.self, from: data)
+            return data
+        } catch {
+            return nil
+        }
+    }
     
-    private func parseToWeather(_ weatherInformation: WeatherInformation, fetchedWeather: Data) -> WeatherVO? {
+    func parseToWeather(
+        _ weatherInformation: WeatherInformation,
+        fetchedWeather: Data
+    ) -> WeatherVO? {
         var weather: WeatherVO?
+        guard let weatherData = decode(fetchedWeather) else {
+            return nil
+        }
         switch weatherInformation {
             case .simpleWeather:
-                weather = parseToSimpleWeather(fetchedWeather)
+                weather = parseToSimpleWeather(weatherData)
             case .detailWeather:
-                weather = parseToDetailWeather(fetchedWeather)
+                weather = parseToDetailWeather(weatherData)
         }
         return weather
     }
 
-    private func parseToSimpleWeather(_ weatherData: Data) -> SimpleWeather? {
-        let decoder = JSONDecoder()
-        do {
-            let decodedData = try decoder.decode(WeatherData.self, from: weatherData)
-            
-            let cityName = decodedData.name
-            let iconName = decodedData.weather[0].icon
-            let temperature = Int(decodedData.main.temp)
-            let humidity = decodedData.main.humidity
-            
-            let simpleWeather = SimpleWeather(
-                cityName: cityName,
-                iconName: iconName,
-                currentTemperature: temperature,
-                currentHumidity: humidity
-            )
-            return simpleWeather
-        } catch {
-            return nil
-        }
+    func parseToSimpleWeather(_ weatherData: WeatherData) -> SimpleWeather {
+        let cityName = weatherData.name
+        let iconName = weatherData.weather[0].icon
+        let temperature = Int(weatherData.main.temp)
+        let humidity = weatherData.main.humidity
+        
+        let simpleWeather = SimpleWeather(
+            cityName: cityName,
+            iconName: iconName,
+            currentTemperature: temperature,
+            currentHumidity: humidity
+        )
+        return simpleWeather
     }
 
-    private func parseToDetailWeather(_ weatherData: Data) -> DetailWeather? {
-        let decoder = JSONDecoder()
-        do {
-            let decodedWeatherData = try decoder.decode(WeatherData.self, from: weatherData)
-            let cityName = decodedWeatherData.name
-            let iconName = decodedWeatherData.weather[0].icon
-            let currentTemperature = Int(decodedWeatherData.main.temp)
-            let feelingTemperature = Int(decodedWeatherData.main.feels_like)
-            let currentHumidity = decodedWeatherData.main.humidity
-            let minimumTemperature = Int(decodedWeatherData.main.temp_min)
-            let maximumTemperature = Int(decodedWeatherData.main.temp_max)
-            let airPressure = Int(decodedWeatherData.main.pressure)
-            let windSpeed = Int(decodedWeatherData.wind.speed)
-            let description = decodedWeatherData.weather[0].description
-            let timeOfData: String = {
-                let formatter = DateFormatter()
-                formatter.dateFormat = "HH:mm"
-                
-                let timeInterval = TimeInterval(String(decodedWeatherData.timeOfData)) ?? 0.0
-                let time = Date(timeIntervalSince1970: timeInterval)
-                return formatter.string(from: time)
-            }()
+    func parseToDetailWeather(_ weatherData: WeatherData) -> DetailWeather? {
+        let cityName = weatherData.name
+        let iconName = weatherData.weather[0].icon
+        let currentTemperature = Int(weatherData.main.temp)
+        let feelingTemperature = Int(weatherData.main.feels_like)
+        let currentHumidity = weatherData.main.humidity
+        let minimumTemperature = Int(weatherData.main.temp_min)
+        let maximumTemperature = Int(weatherData.main.temp_max)
+        let airPressure = Int(weatherData.main.pressure)
+        let windSpeed = Int(weatherData.wind.speed)
+        let description = weatherData.weather[0].description
+        let timeOfData: String = {
+            let formatter = DateFormatter()
+            formatter.dateFormat = "HH:mm"
             
-            let detailWeather = DetailWeather(
-                cityName: cityName,
-                iconName: iconName,
-                currentTemperature: currentTemperature,
-                feelingTemperature: feelingTemperature,
-                currentHumidity: currentHumidity,
-                minimumTemperature: minimumTemperature,
-                maximumTemperature: maximumTemperature,
-                airPressure: airPressure,
-                windSpeed: windSpeed,
-                description: description,
-                timeOfData: timeOfData
-            )
-            return detailWeather
-        } catch {
-            return nil
-        }
+            let timeInterval = TimeInterval(String(weatherData.timeOfData)) ?? 0.0
+            let time = Date(timeIntervalSince1970: timeInterval)
+            return formatter.string(from: time)
+        }()
+        
+        let detailWeather = DetailWeather(
+            cityName: cityName,
+            iconName: iconName,
+            currentTemperature: currentTemperature,
+            feelingTemperature: feelingTemperature,
+            currentHumidity: currentHumidity,
+            minimumTemperature: minimumTemperature,
+            maximumTemperature: maximumTemperature,
+            airPressure: airPressure,
+            windSpeed: windSpeed,
+            description: description,
+            timeOfData: timeOfData
+        )
+        return detailWeather
+    }
+}
+
+// MARK: - OpenWeatherAPI
+
+private extension NetworkManager {
+    func getWeatherURLComponents(cityName: String) -> URLComponents {
+        var components = URLComponents()
+        components.scheme = OpenWeatherAPI.scheme
+        components.host = OpenWeatherAPI.host
+        components.path = OpenWeatherAPI.weatherPath
+        
+        components.queryItems = [
+            URLQueryItem(name: "q", value: cityName),
+            URLQueryItem(name: "units", value: "metric"),
+            URLQueryItem(name: "lang", value: OpenWeatherAPI.languageCode),
+            URLQueryItem(name: "appid", value: OpenWeatherAPI.apiKey)
+        ]
+        return components
+    }
+    
+    func getWeatherURLComponents(latitude: String, longitude: String) -> URLComponents {
+        var components = URLComponents()
+        components.scheme = OpenWeatherAPI.scheme
+        components.host = OpenWeatherAPI.host
+        components.path = OpenWeatherAPI.weatherPath
+        
+        components.queryItems = [
+            URLQueryItem(name: "lat", value: latitude),
+            URLQueryItem(name: "lon", value: longitude),
+            URLQueryItem(name: "units", value: "metric"),
+            URLQueryItem(name: "lang", value: OpenWeatherAPI.languageCode),
+            URLQueryItem(name: "appid", value: OpenWeatherAPI.apiKey)
+        ]
+        return components
+    }
+    
+    func getWeatherIconURLComponents(iconName: String) -> URLComponents {
+        var components = URLComponents()
+        components.scheme = OpenWeatherAPI.scheme
+        components.host = "openweathermap.org"
+        components.path = String(format: OpenWeatherAPI.iconPath, iconName)
+        return components
+    }
+}
+
+// MARK: - GoogleTransitionAPI
+
+private extension NetworkManager {
+    func getTranslateURLComponents(
+        targetText: String,
+        targetLanguageCode: String,
+        sourceLanguageCode: String
+    ) -> URLComponents {
+        var components = URLComponents()
+        components.scheme = GoogleTransitionAPI.scheme
+        components.host = GoogleTransitionAPI.host
+        components.path = GoogleTransitionAPI.path
+        
+        components.queryItems = [
+            URLQueryItem(name: "key", value: GoogleTransitionAPI.apiKey),
+            URLQueryItem(name: "q", value: targetText),
+            URLQueryItem(name: "target", value: targetLanguageCode),
+            URLQueryItem(name: "source", value: sourceLanguageCode)
+        ]
+        return components
     }
 }
