@@ -8,6 +8,7 @@
 import Foundation
 
 enum NetworkManagerError: Error {
+    case urlError
     case networkError
     case responseError
     case dataError
@@ -21,10 +22,11 @@ final class NetworkManager {
     private init() { }
 
     private func performRequest(
-        with urlString: String,
+        with components: URLComponents,
         completion: @escaping (Result<Data, NetworkManagerError>) -> Void
     ) {
-        guard let url = URL(string: urlString) else {
+        guard let url = components.url else {
+            completion(.failure(.urlError))
             return
         }
         let session = URLSession(configuration: .default)
@@ -50,10 +52,13 @@ final class NetworkManager {
 
     // MARK: - Fetch Methods
     
-    func fetchWeather(_ weatherInformation: WeatherInformation, cityName: String, completion: @escaping (Result<WeatherVO, NetworkManagerError>) -> Void) {
-        let languageCode = LanguageCode().rawValue
-        let urlString = "\(K.OpenWeather.weatherURL)&q=\(cityName)&lang=\(languageCode)"
-        performRequest(with: urlString) { [weak self] result in
+    func fetchWeather(
+        _ weatherInformation: WeatherInformation,
+        cityName: String,
+        completion: @escaping (Result<WeatherVO, NetworkManagerError>) -> Void
+    ) {
+        let urlComponents = getWeatherURLComponents(cityName: cityName)
+        performRequest(with: urlComponents) { [weak self] result in
             switch result {
                 case .success(let data):
                     guard let weather = self?.parseToWeather(weatherInformation, fetchedWeather: data) else {
@@ -72,8 +77,8 @@ final class NetworkManager {
         iconName: String,
         completion: @escaping (Result<Data, NetworkManagerError>) -> Void
     ) {
-        let urlString = K.OpenWeather.iconURL + iconName + K.OpenWeather.imageSize2x
-        performRequest(with: urlString) { result in
+        let urlComponents = getWeatherIconURLComponents(iconName: iconName)
+        performRequest(with: urlComponents) { result in
             switch result {
                 case .success(let data):
                     completion(.success(data))
@@ -89,10 +94,8 @@ final class NetworkManager {
         longitude: String,
         completion: @escaping (Result<DetailWeather, NetworkManagerError>) -> Void
     ) {
-        let languageCode = LanguageCode().rawValue
-        
-        let urlString = "\(K.OpenWeather.weatherURL)&lat=\(latitude)&lon=\(longitude)&lang=\(languageCode)"
-        performRequest(with: urlString) { [weak self] result in
+        let urlComponents = getWeatherURLComponents(latitude: latitude, longitude: longitude)
+        performRequest(with: urlComponents) { [weak self] result in
             switch result {
                 case .success(let data):
                     guard let detailWeather = self?.parseToDetailWeather(data) else {
@@ -115,8 +118,12 @@ final class NetworkManager {
         if targetLanguage == defaultLanguage {
             return
         }
-        let urlString = "\(K.Translation.translationURL)&q=\(text)&target=\(targetLanguage)&source=\(defaultLanguage)"
-        performRequest(with: urlString) { result in
+        let urlComponents = getTranslateURLComponents(
+            targetText: text,
+            targetLanguageCode: targetLanguage,
+            sourceLanguageCode: defaultLanguage
+        )
+        performRequest(with: urlComponents) { result in
             switch result {
                 case .success(let data):
                     let decoder = JSONDecoder()
