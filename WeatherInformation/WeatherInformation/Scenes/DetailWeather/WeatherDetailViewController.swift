@@ -8,6 +8,11 @@
 import UIKit
 
 final class WeatherDetailViewController: UIViewController {
+
+    // MARK: - UIProperties
+
+    let weatherDetailView = WeatherDetailView()
+
     // MARK: - Properties
 
     var weatherDetailModel: WeatherDetailModel?
@@ -17,16 +22,14 @@ final class WeatherDetailViewController: UIViewController {
     override func loadView() {
         super.loadView()
         
-        view = WeatherDetailView()
+        view = weatherDetailView
     }
     override func viewDidLoad() {
         super.viewDidLoad()
         
         navigationController?.isNavigationBarHidden = false
-        guard let detailWeatherView = view as? WeatherDetailView else {
-            return
-        }
-        detailWeatherView.loadingView.isLoading = true
+
+        weatherDetailView.loadingView.isLoading = true
         
         weatherDetailModel?.delegate = self
         weatherDetailModel?.getWeatherData()
@@ -40,11 +43,8 @@ extension WeatherDetailViewController: WeatherDetailModelDelegate {
             guard let self = self else {
                 return
             }
-            guard let view = self.view as? WeatherDetailView else {
-                return
-            }
-            view.setProperties(detailWeather: detailWeather)
-            view.loadingView.isLoading = false
+            self.weatherDetailView.setProperties(detailWeather: detailWeather)
+            self.weatherDetailView.loadingView.isLoading = false
         }
     }
     
