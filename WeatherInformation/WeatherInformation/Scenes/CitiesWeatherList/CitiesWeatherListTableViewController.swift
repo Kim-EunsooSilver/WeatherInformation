@@ -153,8 +153,11 @@ extension CitiesWeatherListTableViewController {
     }
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let cityName = citiesWeatherListModel.simpleWeathers[indexPath.row].cityName
+
         let nextVC = WeatherDetailViewController()
-        nextVC.cityName = citiesWeatherListModel.simpleWeathers[indexPath.row].cityName
+        nextVC.weatherDetailModel = WeatherDetailModel(cityName: cityName)
+        
         self.navigationController?.pushViewController(nextVC, animated: true)
     }
 }

@@ -11,6 +11,8 @@
 		8908284E2895278E000F5512 /* NetworkManagerError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8908284D2895278E000F5512 /* NetworkManagerError.swift */; };
 		890AD9642893A841002AEF34 /* NetworkManager+OpenWeatherAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 890AD9632893A841002AEF34 /* NetworkManager+OpenWeatherAPI.swift */; };
 		8915577B28956E3A0020FBEF /* CitiesWeatherListModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8915577A28956E3A0020FBEF /* CitiesWeatherListModel.swift */; };
+		8915577D2896537F0020FBEF /* WeatherDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8915577C2896537F0020FBEF /* WeatherDetailView.swift */; };
+		8915577F28965A060020FBEF /* WeatherDetailModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8915577E28965A060020FBEF /* WeatherDetailModel.swift */; };
 		8918F21C2872D56C00E4CF89 /* CacheManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8918F21B2872D56C00E4CF89 /* CacheManager.swift */; };
 		8918F2212873FC1200E4CF89 /* WeatherDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8918F2202873FC1200E4CF89 /* WeatherDetailViewController.swift */; };
 		892F4697287540EA007C7090 /* UIViewController+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892F4696287540EA007C7090 /* UIViewController+.swift */; };
@@ -37,6 +39,8 @@
 		8908284D2895278E000F5512 /* NetworkManagerError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManagerError.swift; sourceTree = "<group>"; };
 		890AD9632893A841002AEF34 /* NetworkManager+OpenWeatherAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NetworkManager+OpenWeatherAPI.swift"; sourceTree = "<group>"; };
 		8915577A28956E3A0020FBEF /* CitiesWeatherListModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CitiesWeatherListModel.swift; sourceTree = "<group>"; };
+		8915577C2896537F0020FBEF /* WeatherDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherDetailView.swift; sourceTree = "<group>"; };
+		8915577E28965A060020FBEF /* WeatherDetailModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherDetailModel.swift; sourceTree = "<group>"; };
 		8918F21B2872D56C00E4CF89 /* CacheManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheManager.swift; sourceTree = "<group>"; };
 		8918F2202873FC1200E4CF89 /* WeatherDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherDetailViewController.swift; sourceTree = "<group>"; };
 		892F4696287540EA007C7090 /* UIViewController+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+.swift"; sourceTree = "<group>"; };
@@ -120,6 +124,8 @@
 			isa = PBXGroup;
 			children = (
 				8918F2202873FC1200E4CF89 /* WeatherDetailViewController.swift */,
+				8915577E28965A060020FBEF /* WeatherDetailModel.swift */,
+				8915577C2896537F0020FBEF /* WeatherDetailView.swift */,
 			);
 			path = DetailWeather;
 			sourceTree = "<group>";
@@ -269,6 +275,7 @@
 				89D861822884FA1B002B14A2 /* WeatherVO.swift in Sources */,
 				8918F21C2872D56C00E4CF89 /* CacheManager.swift in Sources */,
 				896A9CF52869A51D00A49C1E /* WeatherData.swift in Sources */,
+				8915577F28965A060020FBEF /* WeatherDetailModel.swift in Sources */,
 				89E3DA7B287EAD9C00A839B4 /* TranslationData.swift in Sources */,
 				892F4697287540EA007C7090 /* UIViewController+.swift in Sources */,
 				899E38482877E8D700457639 /* LanguageCode.swift in Sources */,
@@ -277,6 +284,7 @@
 				890AD9642893A841002AEF34 /* NetworkManager+OpenWeatherAPI.swift in Sources */,
 				890828492894F61E000F5512 /* NetworkManager+GoogleTransitionAPI.swift in Sources */,
 				8918F2212873FC1200E4CF89 /* WeatherDetailViewController.swift in Sources */,
+				8915577D2896537F0020FBEF /* WeatherDetailView.swift in Sources */,
 				8915577B28956E3A0020FBEF /* CitiesWeatherListModel.swift in Sources */,
 				89CE58F42877D21900E2ED02 /* String+.swift in Sources */,
 				898D9372286ED6D5006979D4 /* LoadingView.swift in Sources */,
