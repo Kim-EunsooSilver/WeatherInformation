@@ -24,9 +24,6 @@ final class CitiesWeatherListTableViewController: UITableViewController {
 
     // MARK: - viewLifeCycle
 
-    override func loadView() {
-        tableView = UITableView(frame: .zero, style: .grouped)
-    }
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -46,15 +43,15 @@ final class CitiesWeatherListTableViewController: UITableViewController {
     // MARK: - setLayout
 
     private func setLayout() {
-        view.addSubview(loadingView)
+        tableView.addSubview(loadingView)
         
         loadingView.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
-            loadingView.topAnchor.constraint(equalTo: view.topAnchor),
-            loadingView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            loadingView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            loadingView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+            loadingView.topAnchor.constraint(equalTo: tableView.topAnchor),
+            loadingView.leadingAnchor.constraint(equalTo: tableView.leadingAnchor),
+            loadingView.trailingAnchor.constraint(equalTo: tableView.trailingAnchor),
+            loadingView.bottomAnchor.constraint(equalTo: tableView.bottomAnchor)
         ])
     }
 

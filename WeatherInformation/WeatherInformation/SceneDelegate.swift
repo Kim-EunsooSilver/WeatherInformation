@@ -19,7 +19,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(windowScene: windowScene)
         
-        let mainNavigationController = UINavigationController(rootViewController: CitiesWeatherListTableViewController())
+        let mainNavigationController = UINavigationController(rootViewController: CitiesWeatherListTableViewController(style: .grouped))
         
         window?.rootViewController = mainNavigationController
         window?.makeKeyAndVisible()
