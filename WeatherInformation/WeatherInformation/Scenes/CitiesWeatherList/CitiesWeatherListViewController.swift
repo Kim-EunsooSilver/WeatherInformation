@@ -1,5 +1,5 @@
 //
-//  CitiesWeatherListTableViewController.swift
+//  CitiesWeatherListViewController.swift
 //  WeatherInformation
 //
 //  Created by Eunsoo KIM on 2022/06/24.
@@ -8,72 +8,50 @@
 import UIKit
 import CoreLocation
 
-final class CitiesWeatherListTableViewController: UITableViewController {
+final class CitiesWeatherListViewController: UIViewController {
+    
+    // MARK: - UIProperties
+
+    private let citiesWeatherListView = CitiesWeatherListView()
 
     // MARK: - Properties
 
     private let citiesWeatherListModel = CitiesWeatherListModel()
     private let locationManager = CLLocationManager()
 
-    // MARK: - UI Properties
-
-    private let loadingView: LoadingView = {
-        let loadingView = LoadingView()
-        return loadingView
-    }()
-
     // MARK: - viewLifeCycle
 
+    override func loadView() {
+        super.loadView()
+        
+        view = citiesWeatherListView
+    }
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        setLayout()
-        setTableView()
-        setLocationManager()
-        
         citiesWeatherListModel.delegate = self
-        
+        setLocationManager()
+        setTableView()
         getUserLocation()
-        self.loadingView.isLoading = true
+        
+        citiesWeatherListView.loadingView.isLoading = true
     }
     override func viewWillAppear(_ animated: Bool) {
         navigationController?.isNavigationBarHidden = true
     }
 
-    // MARK: - setLayout
-
-    private func setLayout() {
-        tableView.addSubview(loadingView)
-        
-        loadingView.translatesAutoresizingMaskIntoConstraints = false
-        
-        NSLayoutConstraint.activate([
-            loadingView.topAnchor.constraint(equalTo: tableView.topAnchor),
-            loadingView.leadingAnchor.constraint(equalTo: tableView.leadingAnchor),
-            loadingView.trailingAnchor.constraint(equalTo: tableView.trailingAnchor),
-            loadingView.bottomAnchor.constraint(equalTo: tableView.bottomAnchor)
-        ])
-    }
-
     // MARK: - setTableView
 
     private func setTableView() {
-        tableView.register(
-            WeatherTableViewCell.self,
-            forCellReuseIdentifier: K.weatherCellID
-        )
-        tableView.register(
-            WeatherTableViewHeaderView.self,
-            forHeaderFooterViewReuseIdentifier: K.weatherHeaderID
-        )
-        tableView.refreshControl = UIRefreshControl()
-        tableView.refreshControl?.addTarget(
+        let citiesWeatherTableView = citiesWeatherListView.citiesWeatherTableView
+        citiesWeatherTableView.delegate = self
+        citiesWeatherTableView.dataSource = self
+        citiesWeatherTableView.refreshControl?.addTarget(
             self,
             action: #selector(pullToRefresh(_:)),
             for: .valueChanged
         )
     }
-    
     // MARK: - setLocationManager
 
     private func setLocationManager() {
@@ -91,17 +69,16 @@ final class CitiesWeatherListTableViewController: UITableViewController {
     @objc private func pullToRefresh(_ sender: UIRefreshControl) {
         getUserLocation()
     }
-
 }
 
 // MARK: - UITableViewDataSource
 
-extension CitiesWeatherListTableViewController {
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+extension CitiesWeatherListViewController: UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return citiesWeatherListModel.simpleWeathers.count
     }
     
-    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         if locationManager.authorizationStatus == .denied {
             return nil
         }
@@ -117,7 +94,7 @@ extension CitiesWeatherListTableViewController {
         return header
     }
 
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let dequeuedCell = tableView.dequeueReusableCell(
             withIdentifier: K.weatherCellID,
             for: indexPath
@@ -136,12 +113,12 @@ extension CitiesWeatherListTableViewController {
 
 // MARK: - UITableViewDelegate
 
-extension CitiesWeatherListTableViewController {
-    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+extension CitiesWeatherListViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 120
     }
 
-    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         if locationManager.authorizationStatus == .denied {
             return 0
         } else {
@@ -149,7 +126,7 @@ extension CitiesWeatherListTableViewController {
         }
     }
 
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let cityName = citiesWeatherListModel.simpleWeathers[indexPath.row].cityName
 
         let nextVC = WeatherDetailViewController()
@@ -161,7 +138,7 @@ extension CitiesWeatherListTableViewController {
 
 // MARK: - CLLocationManagerDelegate
 
-extension CitiesWeatherListTableViewController: CLLocationManagerDelegate {
+extension CitiesWeatherListViewController: CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         if let location = locations.last {
             citiesWeatherListModel.setMyLocationInformation(currentLocation: location)
@@ -174,19 +151,23 @@ extension CitiesWeatherListTableViewController: CLLocationManagerDelegate {
     }
 }
 
-extension CitiesWeatherListTableViewController: CitiesWeatherListModelDelegate {
+extension CitiesWeatherListViewController: CitiesWeatherListModelDelegate {
     func didUpdateWeatherData() {
         DispatchQueue.main.async { [weak self] in
             guard let self = self else {
                 return
             }
-            if self.loadingView.isLoading == true {
-                self.loadingView.isLoading = false
+            let loadingView = self.citiesWeatherListView.loadingView
+            let citiesWeatherTableView = self.citiesWeatherListView.citiesWeatherTableView
+            
+            if loadingView.isLoading == true {
+                loadingView.isLoading = false
             }
-            if self.tableView.refreshControl?.isRefreshing == true {
-                self.tableView.refreshControl?.endRefreshing()
+            if citiesWeatherTableView.refreshControl?.isRefreshing == true {
+                citiesWeatherTableView.refreshControl?.endRefreshing()
             }
-            self.tableView.reloadData()
+            
+            citiesWeatherTableView.reloadData()
         }
     }
     
