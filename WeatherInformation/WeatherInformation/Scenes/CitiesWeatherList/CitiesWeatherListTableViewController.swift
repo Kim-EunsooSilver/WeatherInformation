@@ -91,7 +91,7 @@ final class CitiesWeatherListTableViewController: UITableViewController {
         locationManager.requestLocation()
     }
 
-    @objc private func pullToRefresh(_ sender: Any) {
+    @objc private func pullToRefresh(_ sender: UIRefreshControl) {
         getUserLocation()
     }
 
