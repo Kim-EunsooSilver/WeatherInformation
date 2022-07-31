@@ -31,9 +31,6 @@ final class WeatherDetailViewController: UIViewController {
         weatherDetailModel?.delegate = self
         weatherDetailModel?.getWeatherData()
     }
-
-    // MARK: - setLayout
-
 }
 
 extension WeatherDetailViewController: WeatherDetailModelDelegate {
@@ -54,6 +51,4 @@ extension WeatherDetailViewController: WeatherDetailModelDelegate {
     func didFailWithError(error: NetworkManagerError) {
         presentNetworkError(with: error)
     }
-    
-    
 }
