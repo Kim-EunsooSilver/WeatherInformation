@@ -34,10 +34,11 @@ final class CitiesWeatherListViewController: UIViewController {
         setLayout()
         setTableView()
         setLocationManager()
+        
+        citiesWeatherListModel.delegate = self
+        
         getUserLocation()
         self.loadingView.isLoading = true
-        
-        getSimpleWeatherInformation()
     }
     override func viewWillAppear(_ animated: Bool) {
         navigationController?.isNavigationBarHidden = true
@@ -95,31 +96,6 @@ final class CitiesWeatherListViewController: UIViewController {
 
     // MARK: - Methods
 
-    private func getSimpleWeatherInformation() {
-        citiesWeatherListModel.getSimpleWeatherInformation { [weak self] result in
-            switch result {
-                case .success():
-                    DispatchQueue.main.async {
-                        self?.loadingView.isLoading = false
-                        self?.citiesWeatherTableView.reloadData()
-                    }
-                case .failure(let error):
-                    self?.presentNetworkError(with: error)
-            }
-        }
-    }
-    
-    private func getMyLocationWeather() {
-        citiesWeatherListModel.getMyLocationWeather { [weak self] result in
-            switch result {
-                case .success():
-                    self?.translateCityName()
-                case .failure(let error):
-                    self?.presentNetworkError(with: error)
-            }
-        }
-    }
-
     private func getUserLocation() {
         locationManager.requestWhenInUseAuthorization()
         locationManager.requestLocation()
@@ -127,31 +103,8 @@ final class CitiesWeatherListViewController: UIViewController {
 
     @objc private func pullToRefresh(_ sender: Any) {
         getUserLocation()
-        citiesWeatherListModel.getSimpleWeatherInformation { [weak self] result in
-            switch result {
-                case .success(_):
-                    DispatchQueue.main.async {
-                        self?.citiesWeatherTableView.refreshControl?.endRefreshing()
-                        self?.citiesWeatherTableView.reloadData()
-                    }
-                case .failure(let error):
-                    self?.presentNetworkError(with: error)
-            }
-        }
     }
 
-    private func translateCityName() {
-        citiesWeatherListModel.translateCityName { [weak self] result in
-            switch result {
-                case .success():
-                    DispatchQueue.main.async {
-                        self?.citiesWeatherTableView.reloadData()
-                    }
-                case .failure(let error):
-                    self?.presentNetworkError(with: error)
-            }
-        }
-    }
 }
 
 // MARK: - UITableViewDataSource
@@ -222,11 +175,32 @@ extension CitiesWeatherListViewController: CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         if let location = locations.last {
             citiesWeatherListModel.setMyLocationInformation(currentLocation: location)
-            getMyLocationWeather()
+            citiesWeatherListModel.getWeatherData()
         }
     }
 
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         print(error)
+    }
+}
+
+extension CitiesWeatherListViewController: CitiesWeatherListModelDelegate {
+    func didUpdateWeatherData() {
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else {
+                return
+            }
+            if self.loadingView.isLoading == true {
+                self.loadingView.isLoading = false
+            }
+            if self.citiesWeatherTableView.refreshControl?.isRefreshing == true {
+                self.citiesWeatherTableView.refreshControl?.endRefreshing()
+            }
+            self.citiesWeatherTableView.reloadData()
+        }
+    }
+    
+    func didFailWithError(error: NetworkManagerError) {
+        presentNetworkError(with: error)
     }
 }

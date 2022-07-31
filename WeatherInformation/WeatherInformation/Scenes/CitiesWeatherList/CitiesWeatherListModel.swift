@@ -8,6 +8,11 @@
 import Foundation
 import CoreLocation
 
+protocol CitiesWeatherListModelDelegate: AnyObject {
+    func didUpdateWeatherData()
+    func didFailWithError(error: NetworkManagerError)
+}
+
 class CitiesWeatherListModel {
     private let networkManager = NetworkManager.shared
     
@@ -15,7 +20,48 @@ class CitiesWeatherListModel {
     private(set) var myLocationWeather: DetailWeather?
     private var myLocationInformation: CLLocation?
     
-    func getSimpleWeatherInformation(completion: @escaping (Result<Void, NetworkManagerError>) -> Void) {
+    weak var delegate: CitiesWeatherListModelDelegate?
+    
+    func getWeatherData() {
+        let group = DispatchGroup()
+        
+        group.enter()
+        getSimpleWeatherInformation { [weak self] result in
+            switch result {
+                case .success():
+                    break
+                case .failure(let error):
+                    self?.delegate?.didFailWithError(error: error)
+            }
+            group.leave()
+        }
+        
+        group.enter()
+        getMyLocationWeather { [weak self] result in
+            switch result {
+                case .success():
+                    break
+                case .failure(let error):
+                    self?.delegate?.didFailWithError(error: error)
+            }
+            group.leave()
+        }
+        
+        group.notify(queue: .global()) {
+            self.translateCityName { [weak self] result in
+                switch result {
+                    case .success():
+                        self?.delegate?.didUpdateWeatherData()
+                    case .failure(let error):
+                        self?.delegate?.didFailWithError(error: error)
+                }
+            }
+        }
+    }
+    
+    private func getSimpleWeatherInformation(
+        completion: @escaping (Result<Void, NetworkManagerError>) -> Void
+    ) {
         let group = DispatchGroup()
         let semaphore = DispatchSemaphore(value: 1)
         var networkError: NetworkManagerError?
@@ -42,9 +88,8 @@ class CitiesWeatherListModel {
             }
         }
         group.notify(queue: .global()) { [weak self] in
-            if networkError != nil {
-                completion(.failure(networkError!))
-                
+            if let networkError = networkError {
+                completion(.failure(networkError))
             }
             self?.simpleWeathers = fetchedSimpleWeathers.sorted(
                 by: { $0.cityName.localized < $1.cityName.localized }
@@ -53,7 +98,9 @@ class CitiesWeatherListModel {
         }
     }
     
-    func getMyLocationWeather(completion: @escaping (Result<Void, NetworkManagerError>) -> Void) {
+    private func getMyLocationWeather(
+        completion: @escaping (Result<Void, NetworkManagerError>) -> Void
+    ) {
         guard let myLocationInformation = myLocationInformation else {
             return
         }
@@ -71,7 +118,9 @@ class CitiesWeatherListModel {
         }
     }
 
-    func translateCityName(completion: @escaping (Result<Void, NetworkManagerError>) -> Void) {
+    private func translateCityName(
+        completion: @escaping (Result<Void, NetworkManagerError>) -> Void
+    ) {
         guard let translatingCityName = myLocationWeather?.cityName else {
             return
         }
