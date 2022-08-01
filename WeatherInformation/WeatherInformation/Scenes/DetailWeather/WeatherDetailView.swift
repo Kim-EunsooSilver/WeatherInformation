@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SnapKit
 
 class WeatherDetailView: UIView {
     
@@ -91,35 +92,34 @@ class WeatherDetailView: UIView {
         backgroundColor = .systemBackground
         
         let uiProperties = [loadingView, cityNameLabel, descriptionLabel, weatherIcon, labelStackView]
-        
-        uiProperties.forEach {
-            $0.translatesAutoresizingMaskIntoConstraints = false
-        }
         uiProperties.forEach {
             addSubview($0)
         }
         
-        NSLayoutConstraint.activate([
-            loadingView.topAnchor.constraint(equalTo: topAnchor),
-            loadingView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            loadingView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            loadingView.bottomAnchor.constraint(equalTo: bottomAnchor),
-
-            
-            cityNameLabel.topAnchor.constraint(equalTo: topAnchor, constant: 100),
-            cityNameLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
-            
-            descriptionLabel.topAnchor.constraint(equalTo: cityNameLabel.bottomAnchor, constant: 30),
-            descriptionLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
-            
-            weatherIcon.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: 20),
-            weatherIcon.widthAnchor.constraint(equalToConstant: 150),
-            weatherIcon.heightAnchor.constraint(equalToConstant: 150),
-            weatherIcon.centerXAnchor.constraint(equalTo: centerXAnchor),
-            
-            labelStackView.topAnchor.constraint(equalTo: weatherIcon.bottomAnchor, constant: 30),
-            labelStackView.centerXAnchor.constraint(equalTo: centerXAnchor)
-        ])
+        loadingView.snp.makeConstraints {
+            $0.edges.equalToSuperview()
+        }
+        cityNameLabel.snp.makeConstraints {
+            $0.top.equalToSuperview().offset(100)
+            $0.centerX.equalToSuperview()
+        }
+        descriptionLabel.snp.makeConstraints {
+            $0.top.equalTo(cityNameLabel.snp.bottom).offset(30)
+            $0.centerX.equalToSuperview()
+        }
+        weatherIcon.snp.makeConstraints {
+            $0.top.equalTo(descriptionLabel.snp.bottom).offset(20)
+            $0.width.height.equalTo(150)
+            $0.centerX.equalToSuperview()
+        }
+        labelStackView.snp.makeConstraints {
+            $0.top.equalTo(weatherIcon.snp.bottom).offset(30)
+            $0.centerX.equalToSuperview()
+        }
+        
+        uiProperties.forEach {
+            $0.translatesAutoresizingMaskIntoConstraints = false
+        }
     }
     
     func setProperties(detailWeather: DetailWeather?) {
