@@ -14,6 +14,7 @@
 		8915577D2896537F0020FBEF /* WeatherDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8915577C2896537F0020FBEF /* WeatherDetailView.swift */; };
 		8915577F28965A060020FBEF /* WeatherDetailModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8915577E28965A060020FBEF /* WeatherDetailModel.swift */; };
 		89155782289678A10020FBEF /* CitiesWeatherListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89155781289678A10020FBEF /* CitiesWeatherListView.swift */; };
+		891557882897F6DA0020FBEF /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 891557872897F6DA0020FBEF /* Kingfisher */; };
 		8918F21C2872D56C00E4CF89 /* CacheManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8918F21B2872D56C00E4CF89 /* CacheManager.swift */; };
 		8918F2212873FC1200E4CF89 /* WeatherDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8918F2202873FC1200E4CF89 /* WeatherDetailViewController.swift */; };
 		892F4697287540EA007C7090 /* UIViewController+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892F4696287540EA007C7090 /* UIViewController+.swift */; };
@@ -73,6 +74,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				891557882897F6DA0020FBEF /* Kingfisher in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -212,6 +214,9 @@
 			dependencies = (
 			);
 			name = WeatherInformation;
+			packageProductDependencies = (
+				891557872897F6DA0020FBEF /* Kingfisher */,
+			);
 			productName = WeatherInformation;
 			productReference = 89924DDC28658BB4006EA2EE /* WeatherInformation.app */;
 			productType = "com.apple.product-type.application";
@@ -242,6 +247,9 @@
 				ja,
 			);
 			mainGroup = 89924DD328658BB4006EA2EE;
+			packageReferences = (
+				891557862897F6DA0020FBEF /* XCRemoteSwiftPackageReference "Kingfisher" */,
+			);
 			productRefGroup = 89924DDD28658BB4006EA2EE /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -517,6 +525,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		891557862897F6DA0020FBEF /* XCRemoteSwiftPackageReference "Kingfisher" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/onevcat/Kingfisher.git";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		891557872897F6DA0020FBEF /* Kingfisher */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 891557862897F6DA0020FBEF /* XCRemoteSwiftPackageReference "Kingfisher" */;
+			productName = Kingfisher;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 89924DD428658BB4006EA2EE /* Project object */;
 }
