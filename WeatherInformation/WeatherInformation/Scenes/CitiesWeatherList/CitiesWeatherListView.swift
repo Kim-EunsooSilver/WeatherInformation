@@ -36,10 +36,10 @@ class CitiesWeatherListView: UIView {
         }
         
         loadingView.snp.makeConstraints{
-            $0.top.leading.trailing.bottom.equalToSuperview()
+            $0.edges.equalToSuperview()
         }
         citiesWeatherTableView.snp.makeConstraints{
-            $0.top.leading.trailing.bottom.equalToSuperview()
+            $0.edges.equalToSuperview()
         }
     }
     
