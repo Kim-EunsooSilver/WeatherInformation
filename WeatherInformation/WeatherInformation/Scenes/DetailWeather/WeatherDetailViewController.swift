@@ -39,11 +39,13 @@ final class WeatherDetailViewController: UIViewController {
 extension WeatherDetailViewController: WeatherDetailModelDelegate {
     func didUpdateWeatherData() {
         let detailWeather = weatherDetailModel?.detailWeather
+        weatherDetailModel?.getWeatherIcon(iconName: detailWeather?.iconName ?? "", completion: { icon in
+            self.weatherDetailView.setProperties(detailWeather: detailWeather, wetherIcon: icon)
+        })
         DispatchQueue.main.async { [weak self] in
             guard let self = self else {
                 return
             }
-            self.weatherDetailView.setProperties(detailWeather: detailWeather)
             self.weatherDetailView.loadingView.isLoading = false
         }
     }

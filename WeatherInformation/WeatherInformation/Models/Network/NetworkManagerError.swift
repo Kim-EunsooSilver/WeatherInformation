@@ -13,4 +13,5 @@ enum NetworkManagerError: Error {
     case responseError
     case dataError
     case parseError
+    case kingFisherError
 }

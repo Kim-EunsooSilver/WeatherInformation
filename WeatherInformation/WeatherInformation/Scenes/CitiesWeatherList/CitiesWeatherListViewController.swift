@@ -87,8 +87,7 @@ extension CitiesWeatherListViewController: UITableViewDataSource {
               let detailWeather = citiesWeatherListModel.myLocationWeather else {
             return nil
         }
-        
-        CacheManager.getWeatherIcon(iconName: detailWeather.iconName) { iconImage in
+        citiesWeatherListModel.getWeatherIcon(iconName: detailWeather.iconName) { iconImage in
             header.setProperties(detailWeather: detailWeather, weatherIcon: iconImage)
         }
         return header
@@ -103,7 +102,7 @@ extension CitiesWeatherListViewController: UITableViewDataSource {
             return UITableViewCell()
         }
         let simpleWeather = citiesWeatherListModel.simpleWeathers[indexPath.row]
-        CacheManager.getWeatherIcon(iconName: simpleWeather.iconName) { iconImage in
+        citiesWeatherListModel.getWeatherIcon(iconName: simpleWeather.iconName) { iconImage in
             cell.setProperties(simpleWeather: simpleWeather, weatherIcon: iconImage)
         }
         cell.selectionStyle = .none

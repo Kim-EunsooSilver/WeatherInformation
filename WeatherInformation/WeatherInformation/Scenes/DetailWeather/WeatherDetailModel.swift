@@ -5,7 +5,7 @@
 //  Created by Eunsoo KIM on 2022/07/31.
 //
 
-import Foundation
+import UIKit
 
 protocol WeatherDetailModelDelegate: AnyObject {
     func didUpdateWeatherData()
@@ -41,4 +41,19 @@ class WeatherDetailModel {
             }
         }
     }
+    
+    func getWeatherIcon(iconName: String, completion: @escaping (UIImage) -> Void) {
+        networkManager.fetchWeatherIcon(iconName: iconName) { result in
+            switch result {
+                case .success(let iconImage):
+                    completion(iconImage)
+                case .failure(_):
+                    guard let failImage = UIImage(systemName: "exclamationmark.triangle") else {
+                        return
+                    }
+                    completion(failImage)
+            }
+        }
+    }
+
 }

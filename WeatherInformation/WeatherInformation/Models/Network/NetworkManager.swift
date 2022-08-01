@@ -6,6 +6,8 @@
 //
 
 import Foundation
+import Kingfisher
+import UIKit
 
 final class NetworkManager {
     static let shared = NetworkManager()
@@ -92,16 +94,20 @@ extension NetworkManager {
     
     func fetchWeatherIcon(
         iconName: String,
-        completion: @escaping (Result<Data, NetworkManagerError>) -> Void
+        completion: @escaping (Result<UIImage, NetworkManagerError>) -> Void
     ) {
         let urlComponents = getWeatherIconURLComponents(iconName: iconName)
-        performRequest(with: urlComponents) { result in
+        guard let url = urlComponents.url else {
+            return
+        }
+        let resource = ImageResource(downloadURL: url)
+        
+        KingfisherManager.shared.retrieveImage(with: resource) { result in
             switch result {
                 case .success(let data):
-                    completion(.success(data))
-                    return
-                case .failure(let error):
-                    completion(.failure(error))
+                    completion(.success(data.image))
+                case .failure(_):
+                    completion(.failure(.kingFisherError))
             }
         }
     }

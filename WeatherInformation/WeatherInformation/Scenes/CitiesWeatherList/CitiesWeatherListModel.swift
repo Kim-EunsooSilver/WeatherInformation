@@ -7,6 +7,7 @@
 
 import Foundation
 import CoreLocation
+import UIKit
 
 protocol CitiesWeatherListModelDelegate: AnyObject {
     func didUpdateWeatherData()
@@ -137,5 +138,19 @@ class CitiesWeatherListModel {
     
     func setMyLocationInformation(currentLocation: CLLocation) {
         myLocationInformation = currentLocation
+    }
+    
+    func getWeatherIcon(iconName: String, completion: @escaping (UIImage) -> Void) {
+        networkManager.fetchWeatherIcon(iconName: iconName) { result in
+            switch result {
+                case .success(let iconImage):
+                    completion(iconImage)
+                case .failure(_):
+                    guard let failImage = UIImage(systemName: "exclamationmark.triangle") else {
+                        return
+                    }
+                    completion(failImage)
+            }
+        }
     }
 }

@@ -24,6 +24,8 @@ extension UIViewController {
                 errorMessage = "wrong data Error!"
             case .parseError:
                 errorMessage = "parasing data Error"
+            case .kingFisherError:
+                errorMessage = "kingFisher Error"
         }
         let alert = UIAlertController(title: "warning", message: errorMessage, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default))

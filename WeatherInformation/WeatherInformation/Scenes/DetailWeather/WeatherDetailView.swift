@@ -122,46 +122,47 @@ class WeatherDetailView: UIView {
         ])
     }
     
-    func setProperties(detailWeather: DetailWeather?) {
+    func setProperties(detailWeather: DetailWeather?, wetherIcon: UIImage) {
         
         guard let _detailWeather = detailWeather else {
             return
         }
-        let localizedStringFormat = K.LocalizedLabelStringFormat.self
-        cityNameLabel.text = _detailWeather.cityName.localized
-        temperatureLabel.text = String(
-            format: localizedStringFormat.temperature,
-            _detailWeather.currentTemperature
-        )
-        feelingTemperatureLabel.text = String(
-            format: localizedStringFormat.feelingTemperature,
-            _detailWeather.feelingTemperature
-        )
-        currentHumidityLabel.text = String(
-            format: localizedStringFormat.currentHumidity,
-            _detailWeather.currentHumidity
-        )
-        minimumTemperatureLabel.text = String(
-            format: localizedStringFormat.minimumTemperature,
-            _detailWeather.minimumTemperature
-        )
-        maximumTemperatureLabel.text = String(
-            format: localizedStringFormat.maximumTemperature,
-            _detailWeather.maximumTemperature
-        )
-        airPressureLabel.text = String(
-            format: localizedStringFormat.airPressure,
-            _detailWeather.airPressure
-        )
-        windSpeedLabel.text = String(
-            format: localizedStringFormat.windSpeed,
-            _detailWeather.windSpeed
-        )
-        descriptionLabel.text = "\(_detailWeather.description)"
-        CacheManager.getWeatherIcon(iconName: _detailWeather.iconName) {  [weak self] iconImage in
-            DispatchQueue.main.async {
-                self?.weatherIcon.image = iconImage
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else {
+                return
             }
+            let localizedStringFormat = K.LocalizedLabelStringFormat.self
+            self.cityNameLabel.text = _detailWeather.cityName.localized
+            self.temperatureLabel.text = String(
+                format: localizedStringFormat.temperature,
+                _detailWeather.currentTemperature
+            )
+            self.feelingTemperatureLabel.text = String(
+                format: localizedStringFormat.feelingTemperature,
+                _detailWeather.feelingTemperature
+            )
+            self.currentHumidityLabel.text = String(
+                format: localizedStringFormat.currentHumidity,
+                _detailWeather.currentHumidity
+            )
+            self.minimumTemperatureLabel.text = String(
+                format: localizedStringFormat.minimumTemperature,
+                _detailWeather.minimumTemperature
+            )
+            self.maximumTemperatureLabel.text = String(
+                format: localizedStringFormat.maximumTemperature,
+                _detailWeather.maximumTemperature
+            )
+            self.airPressureLabel.text = String(
+                format: localizedStringFormat.airPressure,
+                _detailWeather.airPressure
+            )
+            self.windSpeedLabel.text = String(
+                format: localizedStringFormat.windSpeed,
+                _detailWeather.windSpeed
+            )
+            self.descriptionLabel.text = "\(_detailWeather.description)"
+            self.weatherIcon.image = wetherIcon
         }
     }
 
