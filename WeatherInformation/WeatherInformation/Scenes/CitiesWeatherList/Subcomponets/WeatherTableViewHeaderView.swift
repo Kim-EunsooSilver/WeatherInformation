@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SnapKit
 
 final class WeatherTableViewHeaderView: UITableViewHeaderFooterView {
 
@@ -115,44 +116,36 @@ final class WeatherTableViewHeaderView: UITableViewHeaderFooterView {
     private func setLayout() {
         contentView.backgroundColor = .systemBackground
         
-        contentView.addSubview(myLocationLabel)
-        contentView.addSubview(iconAndDescriptionStackView)
-        contentView.addSubview(informationStackView)
-        contentView.addSubview(updatedTimeLabel)
+        let uiProperties = [
+            myLocationLabel,
+            iconAndDescriptionStackView,
+            informationStackView,
+            updatedTimeLabel
+        ]
         
-        myLocationLabel.translatesAutoresizingMaskIntoConstraints = false
-        descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
-        weatherIcon.translatesAutoresizingMaskIntoConstraints = false
-        temperatureLabel.translatesAutoresizingMaskIntoConstraints = false
-        feelingTemperatureLabel.translatesAutoresizingMaskIntoConstraints = false
-        minimumTemperatureLabel.translatesAutoresizingMaskIntoConstraints = false
-        maximumTemperatureLabel.translatesAutoresizingMaskIntoConstraints = false
-        currentHumidityLabel.translatesAutoresizingMaskIntoConstraints = false
-        windSpeedLabel.translatesAutoresizingMaskIntoConstraints = false
-        updatedTimeLabel.translatesAutoresizingMaskIntoConstraints = false
-        iconAndDescriptionStackView.translatesAutoresizingMaskIntoConstraints = false
-        informationStackView.translatesAutoresizingMaskIntoConstraints = false
+        uiProperties.forEach {
+            contentView.addSubview($0)
+        }
         
-        NSLayoutConstraint.activate([
-            myLocationLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10),
-            myLocationLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
-            myLocationLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: 10),
-            
-            weatherIcon.widthAnchor.constraint(equalToConstant: 100),
-            weatherIcon.heightAnchor.constraint(equalToConstant: 100),
-            
-            iconAndDescriptionStackView.topAnchor.constraint(equalTo: myLocationLabel.bottomAnchor, constant: 10),
-            iconAndDescriptionStackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
-            iconAndDescriptionStackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10),
-            
-            informationStackView.topAnchor.constraint(equalTo: myLocationLabel.bottomAnchor, constant: 10),
-            informationStackView.leadingAnchor.constraint(equalTo: iconAndDescriptionStackView.trailingAnchor, constant: 5),
-            informationStackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10),
-            
-            updatedTimeLabel.topAnchor.constraint(equalTo: informationStackView.bottomAnchor, constant: 5),
-            updatedTimeLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10),
-            updatedTimeLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10)
-        ])
+        myLocationLabel.snp.makeConstraints {
+            $0.top.leading.trailing.equalToSuperview().inset(10)
+        }
+        weatherIcon.snp.makeConstraints {
+            $0.width.height.equalTo(100)
+        }
+        iconAndDescriptionStackView.snp.makeConstraints {
+            $0.leading.bottom.equalToSuperview().inset(10)
+            $0.top.equalTo(myLocationLabel.snp.bottom)
+        }
+        informationStackView.snp.makeConstraints {
+            $0.top.equalTo(myLocationLabel.snp.bottom).offset(10)
+            $0.leading.equalTo(iconAndDescriptionStackView.snp.trailing).offset(5)
+            $0.trailing.equalToSuperview().inset(10)
+        }
+        updatedTimeLabel.snp.makeConstraints {
+            $0.top.equalTo(informationStackView.snp.bottom).offset(5)
+            $0.trailing.bottom.equalToSuperview().inset(10)
+        }
     }
 
     // MARK: - Methods
