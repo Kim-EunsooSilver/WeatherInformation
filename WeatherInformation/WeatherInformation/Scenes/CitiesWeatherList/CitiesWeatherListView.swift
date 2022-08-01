@@ -7,6 +7,7 @@
 
 import Foundation
 import UIKit
+import SnapKit
 
 class CitiesWeatherListView: UIView {
     
@@ -31,23 +32,15 @@ class CitiesWeatherListView: UIView {
         let uiProperties = [loadingView, citiesWeatherTableView]
         
         uiProperties.forEach {
-            $0.translatesAutoresizingMaskIntoConstraints = false
-        }
-        uiProperties.forEach {
             addSubview($0)
         }
         
-        NSLayoutConstraint.activate([
-            loadingView.topAnchor.constraint(equalTo: topAnchor),
-            loadingView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            loadingView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            loadingView.bottomAnchor.constraint(equalTo: bottomAnchor),
-            
-            citiesWeatherTableView.topAnchor.constraint(equalTo: topAnchor),
-            citiesWeatherTableView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            citiesWeatherTableView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            citiesWeatherTableView.bottomAnchor.constraint(equalTo: bottomAnchor)
-        ])
+        loadingView.snp.makeConstraints{
+            $0.top.leading.trailing.bottom.equalToSuperview()
+        }
+        citiesWeatherTableView.snp.makeConstraints{
+            $0.top.leading.trailing.bottom.equalToSuperview()
+        }
     }
     
     private func setCitiesWeatherTableView() {
