@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SnapKit
 
 final class WeatherTableViewCell: UITableViewCell {
 
@@ -92,19 +93,14 @@ final class WeatherTableViewCell: UITableViewCell {
         contentView.addSubview(weatherIcon)
         contentView.addSubview(informationStackView)
         
-        informationStackView.translatesAutoresizingMaskIntoConstraints = false
-        weatherIcon.translatesAutoresizingMaskIntoConstraints = false
-        
-        NSLayoutConstraint.activate([
-            weatherIcon.widthAnchor.constraint(equalTo: weatherIcon.heightAnchor),
-            weatherIcon.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10),
-            weatherIcon.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
-            weatherIcon.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10),
+        weatherIcon.snp.makeConstraints {
+            $0.top.leading.bottom.equalToSuperview().inset(10)
+            $0.width.equalTo(weatherIcon.snp.height)
             
-            informationStackView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10),
-            informationStackView.leadingAnchor.constraint(equalTo: weatherIcon.trailingAnchor, constant: 10),
-            informationStackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10),
-            informationStackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10)
-        ])
+        }
+        informationStackView.snp.makeConstraints {
+            $0.top.trailing.bottom.equalToSuperview().inset(10)
+            $0.leading.equalTo(weatherIcon.snp_trailingMargin).offset(10)
+        }
     }
 }
