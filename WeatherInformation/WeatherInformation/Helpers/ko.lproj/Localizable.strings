@@ -6,18 +6,18 @@
   
 */
 
-"My Location" = "나의 위치";
-"Temperature: " = "현재기온: ";
-"Humidity: " = "현재습도: ";
-"updated time: " = "업데이트 시간: ";
+"My Location(%@)" = "나의 위치(%@)";
+"Temperature: %d˚C" = "현재기온: %d˚C";
+"Humidity: %d%" = "현재습도: %d";
+"updated time: %@" = "업데이트 시간: %@";
 
-"current temperature: " = "현재기온: ";
-"feeling temperature: " = "체감기온: ";
-"current humidity: " = "현재습도: ";
-"minimum Temperature: " = "최저기온: ";
-"maximum Temperature: " = "최고기온: ";
-"air pressure: " = "기압: ";
-"wind speed: " = "풍속: ";
+"current temperature: %d˚C" = "현재기온: %d˚C";
+"feeling temperature: %d˚C" = "체감기온: %d˚C";
+"current humidity: %d%%" = "현재습도: %d%%";
+"minimum Temperature: %d˚C" = "최저기온: %d˚C";
+"maximum Temperature: %d˚C" = "최고기온: %d˚C";
+"air pressure: %dhPa" = "기압: %dhPa";
+"wind speed: %dm/s" = "풍속: %dm/s";
 
 "Gongju" = "공주";
 "Gwangju" = "광주";

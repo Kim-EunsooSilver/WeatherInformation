@@ -162,16 +162,41 @@ final class WeatherTableViewHeaderView: UITableViewHeaderFooterView {
             guard let _detailWeather = detailWeather else {
                 return
             }
-            self?.myLocationLabel.text = "My Location".localized + "(" + _detailWeather.cityName + ")"
+            let localizedStringFormat = K.LocalizedLabelStringFormat.self
+            self?.myLocationLabel.text = String(
+                format: localizedStringFormat.myLocation,
+                _detailWeather.cityName
+            )
             self?.descriptionLabel.text = _detailWeather.description
             self?.weatherIcon.image = weatherIcon
-            self?.temperatureLabel.text = "current temperature: ".localized + "\(_detailWeather.currentTemperature)˚C"
-            self?.feelingTemperatureLabel.text = "feeling temperature: ".localized + "\(_detailWeather.feelingTemperature)˚C"
-            self?.currentHumidityLabel.text = "current humidity: ".localized + "\(_detailWeather.currentHumidity)%"
-            self?.minimumTemperatureLabel.text = "minimum Temperature: ".localized + "\(_detailWeather.minimumTemperature)˚C"
-            self?.maximumTemperatureLabel.text = "maximum Temperature: ".localized + "\(_detailWeather.maximumTemperature)˚C"
-            self?.windSpeedLabel.text = "wind speed: ".localized + "\(_detailWeather.windSpeed)m/s"
-            self?.updatedTimeLabel.text = "updated time: ".localized + _detailWeather.timeOfData
+            self?.temperatureLabel.text = String(
+                format: localizedStringFormat.temperature,
+                _detailWeather.currentTemperature
+            )
+            self?.feelingTemperatureLabel.text = String(
+                format: localizedStringFormat.feelingTemperature,
+                _detailWeather.currentTemperature
+            )
+            self?.currentHumidityLabel.text = String(
+                format: localizedStringFormat.currentHumidity,
+                _detailWeather.currentHumidity
+            )
+            self?.minimumTemperatureLabel.text = String(
+                format: localizedStringFormat.minimumTemperature,
+                _detailWeather.minimumTemperature
+            )
+            self?.maximumTemperatureLabel.text = String(
+                format: localizedStringFormat.maximumTemperature,
+                _detailWeather.maximumTemperature
+            )
+            self?.windSpeedLabel.text = String(
+                format: localizedStringFormat.windSpeed,
+                _detailWeather.windSpeed
+            )
+            self?.updatedTimeLabel.text = String(
+                format: localizedStringFormat.updatedTime,
+                _detailWeather.timeOfData
+            )
         }
     }
 }

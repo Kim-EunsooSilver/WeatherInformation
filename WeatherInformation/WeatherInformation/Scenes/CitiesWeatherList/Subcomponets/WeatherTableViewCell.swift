@@ -75,8 +75,14 @@ final class WeatherTableViewCell: UITableViewCell {
             }
             self?.weatherIcon.image = weatherIcon
             self?.cityTitleLabel.text = _simpleWeather.cityName.localized
-            self?.temperatureLabel.text = "Temperature: ".localized + String(_simpleWeather.currentTemperature) + "˚C"
-            self?.humidityLabel.text = "Humidity: ".localized + String(_simpleWeather.currentHumidity) + "%"
+            self?.temperatureLabel.text = String(
+                format: K.LocalizedLabelStringFormat.temperature,
+                _simpleWeather.currentHumidity
+            )
+            self?.humidityLabel.text = String(
+                format: K.LocalizedLabelStringFormat.humidity,
+                _simpleWeather.currentHumidity
+            )
         }
     }
 

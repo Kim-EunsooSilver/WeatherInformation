@@ -6,19 +6,18 @@
   
 */
 
-"My Location" = "私の場所";
-"Temperature: " = "現在の気温: ";
-"Humidity: " = "現在の湿度: ";
-"updated time: " = "更新時間: ";
+"My Location(%@)" = "場所(%@)";
+"Temperature: %d˚C" = "現在の気温: %d˚C";
+"Humidity: %d%" = "現在の湿度: %d";
+"updated time: %@" = "更新時間: %@";
 
-"current temperature: " = "現在の気温: ";
-"feeling temperature: " = "体感気温：";
-"current humidity: " = "現在の湿度: ";
-"minimum Temperature: " = "最低気温: ";
-"maximum Temperature: " = "最高気温: ";
-"air pressure: " = "気圧: ";
-"wind speed: " = "風速: ";
-
+"current temperature: %d˚C" = "現在の気温: %d˚C";
+"feeling temperature: %d˚C" = "体感気温： %d˚C";
+"current humidity: %d%%" = "現在の湿度: %d%%";
+"minimum Temperature: %d˚C" = "最低気温: %d˚C";
+"maximum Temperature: %d˚C" = "最高気温: %d˚C";
+"air pressure: %dhPa" = "気圧: %dhPa";
+"wind speed: %dm/s" = "風速: %dm/s";
 
 "Gongju" = "プリンセス";
 "Gwangju" = "広州";

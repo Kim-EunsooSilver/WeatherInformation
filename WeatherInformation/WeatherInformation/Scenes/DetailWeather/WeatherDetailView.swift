@@ -127,14 +127,36 @@ class WeatherDetailView: UIView {
         guard let _detailWeather = detailWeather else {
             return
         }
+        let localizedStringFormat = K.LocalizedLabelStringFormat.self
         cityNameLabel.text = _detailWeather.cityName.localized
-        temperatureLabel.text = "current temperature: ".localized + "\(_detailWeather.currentTemperature)˚C"
-        feelingTemperatureLabel.text = "feeling temperature: ".localized + "\(_detailWeather.feelingTemperature)˚C"
-        currentHumidityLabel.text = "current humidity: ".localized + "\(_detailWeather.currentHumidity)%"
-        minimumTemperatureLabel.text = "minimum Temperature: ".localized + "\(_detailWeather.minimumTemperature)˚C"
-        maximumTemperatureLabel.text = "maximum Temperature: ".localized + "\(_detailWeather.maximumTemperature)˚C"
-        airPressureLabel.text = "air pressure: ".localized + "\(_detailWeather.airPressure)hPa"
-        windSpeedLabel.text = "wind speed: ".localized + "\(_detailWeather.windSpeed)m/s"
+        temperatureLabel.text = String(
+            format: localizedStringFormat.temperature,
+            _detailWeather.currentTemperature
+        )
+        feelingTemperatureLabel.text = String(
+            format: localizedStringFormat.feelingTemperature,
+            _detailWeather.feelingTemperature
+        )
+        currentHumidityLabel.text = String(
+            format: localizedStringFormat.currentHumidity,
+            _detailWeather.currentHumidity
+        )
+        minimumTemperatureLabel.text = String(
+            format: localizedStringFormat.minimumTemperature,
+            _detailWeather.minimumTemperature
+        )
+        maximumTemperatureLabel.text = String(
+            format: localizedStringFormat.maximumTemperature,
+            _detailWeather.maximumTemperature
+        )
+        airPressureLabel.text = String(
+            format: localizedStringFormat.airPressure,
+            _detailWeather.airPressure
+        )
+        windSpeedLabel.text = String(
+            format: localizedStringFormat.windSpeed,
+            _detailWeather.windSpeed
+        )
         descriptionLabel.text = "\(_detailWeather.description)"
         CacheManager.getWeatherIcon(iconName: _detailWeather.iconName) {  [weak self] iconImage in
             DispatchQueue.main.async {
